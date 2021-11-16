@@ -1,0 +1,71 @@
+body{
+    background-image: url(../images/background.png);
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+#main-row{
+    height: 700px;
+}
+
+.accordion{
+    max-height:560px;
+}
+
+.list-group{
+    max-height: 497px;
+}
+
+.alert-secondary{
+    width: 361px;
+    font-weight: bold;
+    background-color: #2F4F4F;
+}
+
+#emails-title-is-not-found{
+    height: 50px;
+}
+
+.alert-primary{
+    /*width: 550px;*/
+    height: 50px;
+    color: black;
+    background-color: #2F4F4F;
+}
+
+.mb-0{
+    height: 50px;
+}
+
+.btn-default{
+    background-color: grey;
+}
+
+.message_more{
+    color: purple;
+}
+
+#emails-list-group-item{
+    height: 45px;
+    text-align:center;
+    font-weight: bold;
+    color: white;
+    background-image: url(../images/message_button_back.jpg);
+}
+
+.card-header{
+    background-image: url(../images/emails_button_back.jpg);
+}
+
+.list-group-item{
+    color: black;
+    background-image: url(../images/message_button_back2.png);
+}
+
+#emails-title{
+    color: #E0FFFF;
+}
+
+#messages-title{
+    color: #E0FFFF;
+}

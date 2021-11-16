@@ -1,0 +1,153 @@
+{% extends 'base.html'%}
+{% block title%}FuckMail{% endblock %}
+
+{% block body %}
+<div id="myModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Добавить аккаунт</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="post" action="add_account">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend"><span class="input-group-text">📧</span></div>
+            <input type="text" class="form-control" name="mail-address" placeholder="Mail address">
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend"><span class="input-group-text">🔐</span></div>
+            <input type="text" class="form-control" name="mail-password" placeholder="Mail password">
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend"><span class="input-group-text">👮🏻‍♂️</span></div>
+            <input type="text" class="form-control" name="proxy-url" placeholder="Proxy url (ip:port:username:password)">
+        </div>
+        <div class="modal-footer">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+        </form>
+        </div>
+      </div>
+    </div>
+</div>
+
+{% if is_new_account.status %}
+    {% if is_new_account.type == 'Success' %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{is_new_account.message|safe}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+    {% elif is_new_account.type == 'Error' %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{is_new_account.message}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endif %}
+{% endif %}
+<br>
+<div id="main-row" class="row justify-content-between">
+    <div class="col-3">
+    {% if emails %}
+    <div class="alert alert-secondary" role="alert">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm">
+                    <h4 id="emails-title">Emails</h4>
+                </div>
+                <div id="username" class="col-sm text-right">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{username}}
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="javascript:$('#myModal').modal('show')">Добавить аккаунт</a>
+                            <a class="dropdown-item" href="logout">Выход</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+            <span class="input-group-text">🔍</span>
+            </div>
+            <input type="text" id="basic-addon1" name="email_address" class="form-control" placeholder="Mail Address" aria-label="Username" aria-describedby="basic-addon1">
+        </div>
+    </form>
+    <div class="list-group pre-scrollable">
+        <form method="post" action="/profile">
+            {% csrf_token %}
+            {% for email in emails %}
+                <input id="emails-list-group-item" name="email" value="{{email.address}}" type="submit" class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded">
+            {% endfor %}
+        </form>
+    </div>
+    {% else %}
+        <div class="alert alert-secondary" role="alert">
+            <div class="container-fluid">
+                <div class="row">
+                    <div id="emails-title-is-not-found" class="col-sm">
+                        <h4 id="emails-title">Emails is not found</h4>
+                    </div>
+                    <div id="username" class="col-sm text-right">
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{username}}
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a id="add_account_action" class="dropdown-item" href="javascript:$('#myModal').modal('show')">Добавить аккаунт</a>
+                                <a id="exit_action" class="dropdown-item" href="logout">Выход</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    </div>
+    <div class="col-9">
+    {% if messages %}
+    <div class="alert alert-primary" role="alert">
+        <h4 id="messages-title">Messages(Incoming) <span class="badge badge-dark">{{address}}</span><span class="badge badge-info">💬{{count_messages}}</span></h4>
+    </div>
+    <div class="accordion pre-scrollable p-6" id="accordionExample">
+        {% for message in messages %}
+            <div class="card">
+                <div class="card-header shadow p-3 mb-2 bg-white rounded" id="heading{{message.message_id}}">
+                    <h5 class="mb-0">
+                    <input value="{{message.from_user}} - {{message.subject}}" type="submit" 
+                    class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded font-weight-bold"
+                    data-toggle="collapse" data-target="#collapse{{message.message_id}}" aria-expanded="true" aria-controls="collapse{{message.message_id}}"
+                    data-placement="right" title="{{message.subject}}"></input>
+                    </h5>
+                </div>
+                <div id="collapse{{message.message_id}}" class="collapse" aria-labelledby="heading{{message.message_id}}" data-parent="#accordionExample">
+                    <div class="card-body">
+                        <div class="bang">
+                            <small id="emailHelp" class="form-text text-muted"><u>Date: {{message.date}}</u>&nbsp;<a class="message_more" role="button" tabindex="0" href="/message_more_info/{{message.message_id}}">More</a></small>
+                        </div>
+                        <br>
+                        <div class='safeclass'>
+                            {{message.payload|safe}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        <div class="alert alert-primary" role="alert">
+            <h4 id="messages-title">Messages is not found</h4>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

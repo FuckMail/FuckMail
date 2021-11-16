@@ -1,0 +1,10 @@
+Scripts/
+Lib/
+Include/
+pyvenv.cfg
+
+FuckMail/config.json
+FuckMail/db.sqlite3
+FuckMail/celerybeat-schedule.bak
+FuckMail/celerybeat-schedule.dat
+FuckMail/celerybeat-schedule.dir
