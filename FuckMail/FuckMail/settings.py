@@ -87,7 +87,8 @@ WSGI_APPLICATION = 'FuckMail.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {'default': {config["DATABASES"]}}
+print(config["DATABASE"])
+DATABASES = {'default': dict(config["DATABASE"])}
 # 'HOST': 'db'
 
 # Password validation
