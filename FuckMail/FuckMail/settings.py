@@ -87,7 +87,6 @@ WSGI_APPLICATION = 'FuckMail.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-print(config["DATABASE"])
 DATABASES = {'default': dict(config["DATABASE"])}
 # 'HOST': 'db'
 
