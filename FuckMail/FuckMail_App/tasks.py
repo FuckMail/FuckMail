@@ -106,7 +106,10 @@ class UpdateMessages:
 @shared_task
 def update_messages():
     updateMessages = UpdateMessages(Emails, CacheMessages)
-    updateMessages.update_messages_ins()
+    try:
+        updateMessages.update_messages_ins()
+    except Exception as e:
+        logger.error(e)
 
 # celery --app FuckMail worker -l INFO
 # celery -A FuckMail beat -l INFO
