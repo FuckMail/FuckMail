@@ -104,6 +104,10 @@ a.foo:link{
     color: white;
 }
 
+#is_not_emails-title{
+    color: white;
+}
+
 .btn-dark{
     font-size: 15px;
 }
