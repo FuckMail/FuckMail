@@ -5,6 +5,8 @@ import email
 from hashlib import md5
 from datetime import datetime, timedelta
 
+from json import dumps
+
 import socks
 from dateutil import parser
 from django.urls import reverse
@@ -12,9 +14,14 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import login, logout
 
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
+
 from .models import *
 from django.contrib.auth.models import User
 
+from .serializers import *
 
 # Myself imap servers
 IMAP_SERVERS = {
@@ -132,6 +139,24 @@ class HttpJavascriptResponse(HttpResponse):
     def __init__(self,content):
        HttpResponse.__init__(self,content,mimetype="text/javascript")
 
+
+class EmailsView(ListAPIView):
+    serializer_class = EmailsSerializer
+    def get(self, request):
+        queryset = Emails.objects.all()
+        serializer = EmailsSerializer(queryset, many=True)
+        return HttpResponse(dumps({"data": serializer.data}), content_type='application/json')
+    #return Response({"articles": serializer.data})
+
+
+class CacheMessagesView(ListAPIView):
+    serializer_class = CacheMessages
+    def get(self, request, mail_address):
+        queryset = CacheMessages.objects.filter(address=mail_address).all()
+        serializer = CacheMessagesSerializer(queryset, many=True)
+        return HttpResponse(dumps({"cachemessages": serializer.data}), content_type='application/json')
+
+
 def index(request):
     if request.user.is_authenticated:
         return redirect("profile")
@@ -170,11 +195,9 @@ def profile(request):
         except KeyError:
             is_new_account = {"status": False}
         request.session["add_new_account"] = {"status": False}
-        data = None
         check_auth = None
-        emailStruct = None
         username = User.objects.get(pk=request.session["_auth_user_id"]).username
-        emails = Emails.objects.all()
+        emails = Emails.objects.filter(user_id=int(request.session["_auth_user_id"])).all()
 
         if request.POST:
             if "email" in request.POST:
