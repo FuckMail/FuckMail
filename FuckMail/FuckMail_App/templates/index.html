@@ -83,7 +83,7 @@
             <input type="text" id="basic-addon1" name="email_address" class="form-control" placeholder="Mail Address" aria-label="Username" aria-describedby="basic-addon1">
         </div>
     </form>
-    <div class="list-group pre-scrollable">
+    <div id="mails-scrollbar" class="list-group pre-scrollable">
         <form method="post" action="/profile">
             {% csrf_token %}
             {% for email in emails %}
