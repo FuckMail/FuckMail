@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'FuckMail_App',
     'django_celery_beat',
-    'django_celery_results'
+    'django_celery_results',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
