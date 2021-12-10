@@ -18,7 +18,6 @@ IMAP_SERVERS = {
     "gmail.com":"imap.gmail.com"
 }
 
-
 class UpdateMessages:
     def __init__(self, mails: Emails, cache_messages: CacheMessages):
         self.mail = None
