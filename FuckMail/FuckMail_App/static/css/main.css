@@ -69,3 +69,29 @@ body{
 #messages-title{
     color: #E0FFFF;
 }
+
+.container{
+    width: 350px;
+}
+
+#mails-scrollbar::-webkit-scrollbar
+{
+	width: 6px;
+	background-color: #F5F5F5;
+}
+
+#mails-scrollbar::-webkit-scrollbar-thumb
+{
+	background-color: #000000;
+}
+
+#accordionExample::-webkit-scrollbar
+{
+	width: 6px;
+	background-color: #F5F5F5;
+}
+
+#accordionExample::-webkit-scrollbar-thumb
+{
+	background-color: #000000;
+}
