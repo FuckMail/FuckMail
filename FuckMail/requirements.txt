@@ -14,6 +14,7 @@ Django==3.2.9
 django-celery-beat==2.2.1
 django-celery-results==2.2.0
 django-timezone-field==4.2.1
+djangorestframework==3.12.4
 gunicorn==20.1.0
 idna==3.3
 kombu==5.2.0
