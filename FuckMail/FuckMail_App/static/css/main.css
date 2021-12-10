@@ -76,22 +76,38 @@ body{
 
 #mails-scrollbar::-webkit-scrollbar
 {
-	width: 6px;
-	background-color: #F5F5F5;
+    width: 6px;
+    background-color: #F5F5F5;
 }
 
 #mails-scrollbar::-webkit-scrollbar-thumb
 {
-	background-color: #000000;
+    background-color: #000000;
 }
 
 #accordionExample::-webkit-scrollbar
 {
-	width: 6px;
-	background-color: #F5F5F5;
+    width: 6px;
+    background-color: #F5F5F5;
 }
 
 #accordionExample::-webkit-scrollbar-thumb
 {
-	background-color: #000000;
+    background-color: #000000;
+}
+
+a.foo:link{
+    color:blue;
+}
+
+#is_not_messages-title{
+    color: white;
+}
+
+.btn-dark{
+    font-size: 15px;
+}
+
+.btn-danger{
+    font-size: 15px;
 }
