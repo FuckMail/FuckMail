@@ -20,8 +20,4 @@ class Emails(admin.ModelAdmin):
 class CacheMessages(admin.ModelAdmin):
     fields = ["message_id", "address", "from_user", "subject", "date", "visual"]
     list_display = ["address", "from_user", "subject"]
-    readonly_fields = ["visual", "payload"]
-
-    @admin.display(ordering="payload")
-    def format_to_html(self, obj):
-        return mark_safe("<h1>Genius</h1>")
+    readonly_fields = ["visual"]
