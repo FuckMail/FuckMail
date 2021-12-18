@@ -7,7 +7,7 @@ class EmailsSerializer(serializers.Serializer):
     address = serializers.CharField(max_length=255)
 
     class Meta:
-        model = Emails
+        model = Mails
         fields = ["pk", "user_id", "address"]
 
 
