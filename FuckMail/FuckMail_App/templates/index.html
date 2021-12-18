@@ -26,7 +26,7 @@
             </div>
             <div class="modal-footer">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <button type="submit" class="btn btn-primary" name="save_account">Сохранить</button>
             </div>
         </form>
         </div>
@@ -80,14 +80,14 @@
             <div class="input-group-prepend">
             <span class="input-group-text">🔍</span>
             </div>
-            <input type="text" id="basic-addon1" name="email_address" class="form-control" placeholder="Mail Address" aria-label="Username" aria-describedby="basic-addon1">
+            <input type="text" id="basic-addon1" name="search_mail" class="form-control" placeholder="Mail Address" aria-label="Username" aria-describedby="basic-addon1">
         </div>
     </form>
     <div id="mails-scrollbar" class="list-group pre-scrollable">
         <form method="post" action="/profile">
             {% csrf_token %}
             {% for email in emails %}
-                <input id="emails-list-group-item" name="email" value="{{email.address}}" type="submit" class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded">
+                <input id="emails-list-group-item" name="have_mail" value="{{email.address}}" type="submit" class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded">
             {% endfor %}
         </form>
     </div>
@@ -117,18 +117,27 @@
     <div class="col-9">
     {% if messages %}
     <div class="alert alert-primary" role="alert">
-        <h4 id="messages-title">Messages(Incoming💬{{count_messages}}) <span class="badge badge-dark">{{address}}</span></h4>
+        <h4 id="messages-title">Messages(Incoming💬{{messages|length}}) <span id="mail_address" class="badge badge-dark"">{{address}}</span></h4>
     </div>
     <div class="accordion pre-scrollable p-6" id="accordionExample">
         {% for message in messages %}
             <div class="card">
                 <div class="card-header shadow p-3 mb-2 bg-white rounded" id="heading{{message.message_id}}">
-                    <h5 class="mb-0">
-                    <input value="{{message.from_user}} - {{message.subject}}" type="submit" 
-                    class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded font-weight-bold"
-                    data-toggle="collapse" data-target="#collapse{{message.message_id}}" aria-expanded="true" aria-controls="collapse{{message.message_id}}"
-                    data-placement="right" title="{{message.subject}}">
-                    </h5>
+                    {% if message.visual %}
+                        <h5>
+                        <input style="color: #686868;" id="{{message.message_id}}" value="{{message.from_user}} - {{message.subject}}" type="submit" 
+                        class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded font-weight-bold"
+                        data-toggle="collapse" data-target="#collapse{{message.message_id}}" aria-expanded="true" aria-controls="collapse{{message.message_id}}"
+                        data-placement="right" title="{{message.subject}}" onclick="show_message(this.id);">
+                        </h5>
+                    {% else %}
+                        <h5>
+                        <input style="color: #000000;" id="{{message.message_id}}" value="{{message.from_user}} - {{message.subject}}" type="submit" 
+                        class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded font-weight-bold"
+                        data-toggle="collapse" data-target="#collapse{{message.message_id}}" aria-expanded="true" aria-controls="collapse{{message.message_id}}"
+                        data-placement="right" title="{{message.subject}}" onclick="show_message(this.id);">
+                        </h5>
+                    {% endif %}
                 </div>
                 <div id="collapse{{message.message_id}}" class="collapse" aria-labelledby="heading{{message.message_id}}" data-parent="#accordionExample">
                     <div class="card-body">
