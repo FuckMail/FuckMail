@@ -10,15 +10,20 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
-from os import path
+import yaml
+from os import path, environ
 from pathlib import Path
-from json import loads
+
+from loguru import logger
+
+if not path.exists(r"config.yaml"):
+    logger.warning("Don't exists file is 'config.yaml'")
+else:
+    with open(r"config.yaml") as f:
+        config = yaml.load(f, Loader=yaml.FullLoader)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-with open(r"config.json", "r", encoding="utf-8") as load_data:
-    config = loads(load_data.read())
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -36,8 +41,7 @@ CELERY_TIMEZONE = "Europe/Moscow"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 # CELERY_BROKER_URL = "redis://redis:6379/0"
-CELERY_BROKER_URL = config["CELERY_BROKER_URL"]
-
+CELERY_BROKER_URL = "redis://localhost:6379/0"
 
 # Application definition
 
@@ -88,8 +92,15 @@ WSGI_APPLICATION = 'FuckMail.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {'default': dict(config["DATABASE"])}
-# 'HOST': 'db'
+DATABASES = {'default': {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": config["DB"]["NAME"],
+        "USER": config["DB"]["USER"],
+        "PASSWORD": config["DB"]["PASSWORD"],
+        "HOST": config["DB"]["HOST"],
+        "PORT": config["DB"]["PORT"]
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -119,9 +130,9 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_L10N = True
+USE_L10N = False
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
