@@ -4,7 +4,7 @@ from django.utils.safestring import mark_safe
 
 from .models import *
 
-@admin.register(Emails)
+@admin.register(Mails)
 class Emails(admin.ModelAdmin):
     fields = ["address", "password", "proxy_url", "create_at"]
     list_display = ["address", "password", "check_proxy_format", "create_at"]
