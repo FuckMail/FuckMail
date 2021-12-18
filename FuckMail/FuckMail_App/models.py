@@ -4,7 +4,7 @@ from datetime import datetime
 
 from django.db import models
 
-class Emails(models.Model):
+class Mails(models.Model):
     user_id = models.IntegerField()
     address = models.CharField(max_length=255, null=True, verbose_name="Email Address")
     password = models.CharField(max_length=255, null=True, verbose_name="Email Password")
@@ -24,9 +24,9 @@ class CacheMessages(models.Model):
     address = models.CharField(max_length=255, null=True, verbose_name="Email Address")
     from_user = models.CharField(max_length=255, null=True, verbose_name="From")
     subject = models.CharField(max_length=255, null=True, verbose_name="Subject")
-    date = models.DateTimeField(editable=True, default=datetime.now())
+    date = models.DateTimeField(editable=True)
     payload = models.TextField(null=True, verbose_name="Payload")
-    visual = models.BooleanField()
+    visual = models.BooleanField(default=False)
 
     def __str__(self):
         return "<CacheMessage: %s>" % self.message_id
