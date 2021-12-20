@@ -19,7 +19,7 @@ IMAP_SERVERS = {
 }
 
 class UpdateMessages:
-    def __init__(self, mails: Emails, cache_messages: CacheMessages):
+    def __init__(self, mails: Mails, cache_messages: CacheMessages):
         self.mail = None
         self.mails = mails.objects.all()
 
@@ -105,7 +105,7 @@ class UpdateMessages:
 
 @shared_task
 def update_messages():
-    updateMessages = UpdateMessages(Emails, CacheMessages)
+    updateMessages = UpdateMessages(Mails, CacheMessages)
     try:
         updateMessages.update_messages_ins()
     except Exception as e:
