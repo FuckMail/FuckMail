@@ -100,6 +100,46 @@
         </form>
     </div>
     {% else %}
+        {% if first_mail %}
+        <div class="alert alert-secondary" role="alert">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm">
+                        <h4 id="emails-title">Emails</h4>
+                    </div>
+                    <div id="username" class="col-sm text-right">
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{username}}
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <div class="col-xs-12 col-sm-4">
+                                    <button type="button" class="btn btn-dark" onclick="javascript:$('#myModal').modal('show')">Добавить аккаунт</button>
+                                    <button type="button" class="btn btn-danger" onclick="location.href='logout'">Выход</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                <span class="input-group-text">🔍</span>
+                </div>
+                <input type="text" id="basic-addon1" name="search_mail" class="form-control" placeholder="Mail Address" aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+        </form>
+        <h6><p class="lead">Количество: <mark>{{mails_length}}</mark></p></h6>
+        <div id="mails-scrollbar" class="list-group pre-scrollable">
+            <form method="post" action="/profile">
+                    <input style="color: black;" id="mail-{{first_mail}}" name="have_mail" value="{{first_mail}}" type="submit"
+                    class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded" title="{{first_mail}}">
+            </form>
+        </div>
+        {% else %}
         <div class="alert alert-secondary" role="alert">
             <div class="container-fluid">
                 <div class="row">
@@ -120,6 +160,7 @@
                 </div>
             </div>
         </div>
+        {% endif %}
     {% endif %}
     </div>
     <div class="col-9">
