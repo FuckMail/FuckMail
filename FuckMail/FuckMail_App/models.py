@@ -13,7 +13,7 @@ class Mails(models.Model):
     create_at = models.DateTimeField(editable=True, default=datetime.now())
 
     def __str__(self):
-        return "<Email: %s>" % self.address
+        return "%s" % self.address
 
     class Meta:
         verbose_name = "Email"
