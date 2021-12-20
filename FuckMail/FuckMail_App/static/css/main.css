@@ -123,7 +123,7 @@ a.foo:link{
 #del-mail{
     width: 34px;
     height: 19px;
-    background-image: url(../images/_mail_del.png);
+    background-image: url(../images/mail_del.png);
 }
 
 .dropdown-menu{
