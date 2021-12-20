@@ -20,6 +20,45 @@ function show_message(message_id){
     }).then(console.log(true))
 }
 
+function del_mail(mail_address){
+    $('#delMail').modal('hide');
+    document.getElementById("accordionExample").remove();
+    document.getElementById("messages-title").textContent = "Messages is not found";
+    document.getElementById("mail-"+mail_address).remove();
+    var data = new FormData();
+    data.append("mail_address", mail_address);
+    fetch("del_mail/", {
+        method: "POST",
+        body: data,
+        contentType: 'application/json',
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+          "X-CSRFToken": getCookie("csrftoken")
+        },
+    }).then(console.log(true))
+    window.location.replace("profile");
+}
+
+function del_is_not_found_mail(mail_address){
+    $('#delMail').modal('hide');
+    var data = new FormData();
+    data.append("mail_address", mail_address);
+    fetch("del_mail/", {
+        method: "POST",
+        body: data,
+        contentType: 'application/json',
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+          "X-CSRFToken": getCookie("csrftoken")
+        },
+    }).then(console.log(true))
+    window.location.replace("profile");
+}
+
+function return_main_page(){
+    window.location.replace("profile");
+}
+
 function getCookie(name) {
     var cookieValue = null;
     var i = 0;
