@@ -85,7 +85,7 @@ class MailsCore:
                             message_id = md5(re.sub('[^0-9a-zA-Z]+', '', message["Message-Id"]).encode("utf-8")).hexdigest()
                             CacheMessages.objects.create(
                                 message_id=message_id, address=mail_address,
-                                from_user=message["from"], subject=message["subject"],
+                                from_user=message["from"], subject=self.subject_format(message["subject"]),
                                 date=self.date_format(message["date"]), payload=decode_message_payload
                             )
             _messages = CacheMessages.objects.filter(address=mail_address).order_by("date").all()
@@ -119,7 +119,7 @@ class MailsCore:
                             message_id = md5(re.sub('[^0-9a-zA-Z]+', '', message["Message-Id"]).encode("utf-8")).hexdigest()
                             CacheMessages.objects.create(
                                 message_id=message_id, address=mail_address,
-                                from_user=message["from"], subject=message["subject"],
+                                from_user=message["from"], subject=self.subject_format(message["subject"]),
                                 date=self.date_format(message["date"]), payload=decode_message_payload
                             )
             _messages = CacheMessages.objects.filter(address=mail_address).order_by("date").all()
@@ -185,3 +185,9 @@ class MailsCore:
 
         date_format = dt.strftime(parser.parse(datetime), "%Y-%m-%d %H:%M:%S")
         return date_format
+    
+    def subject_format(self, subject):
+        subject = subject.split("=?UTF-8?")[0]
+        if not subject:
+            return "Unknow subject"
+        return subject
