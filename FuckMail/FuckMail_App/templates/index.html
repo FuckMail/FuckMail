@@ -209,7 +209,7 @@
                 <div id="collapse{{message.message_id}}" class="collapse" aria-labelledby="heading{{message.message_id}}" data-parent="#accordionExample">
                     <div class="card-body">
                         <div class="bang">
-                            <small id="emailHelp" class="form-text text-muted"><u>Date: {{message.date}}</u>&nbsp;<a class="message_more" role="button" tabindex="0" href="/message_more_info/{{message.message_id}}">More</a></small>
+                            <small id="emailHelp" class="form-text text-muted">Date: <u>{{message.date|date:'Y-M-d H:i:s'}}</u>&nbsp;<a class="message_more" role="button" tabindex="0" href="/message_more_info/{{message.message_id}}">More</a></small>
                         </div>
                         <br>
                         <div>
