@@ -185,7 +185,7 @@ class MailsCore:
 
         date_format = dt.strftime(parser.parse(datetime), "%Y-%m-%d %H:%M:%S")
         return date_format
-    
+
     def subject_format(self, subject):
         subject = subject.split("=?UTF-8?")[0]
         if not subject:
