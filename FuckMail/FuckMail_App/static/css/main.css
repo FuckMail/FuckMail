@@ -9,11 +9,11 @@ body{
 }
 
 .accordion{
-    max-height:560px;
+    max-height:645px;
 }
 
 .list-group{
-    max-height: 497px;
+    max-height: 545px;
 }
 
 .alert-secondary{
@@ -44,8 +44,7 @@ body{
 .message_more{
     color: purple;
 }
-
-#emails-list-group-item{
+input[name="have_mail"]{
     height: 45px;
     text-align:center;
     font-weight: bold;
@@ -54,12 +53,14 @@ body{
 }
 
 .card-header{
+    height: 10px;
     background-image: url(../images/emails_button_back.jpg);
 }
 
 .list-group-item{
     color: black;
-    background-image: url(../images/message_button_back2.png);
+    font-size: 15px;
+    background-image: url(../images/message_button_back2.jpg);
 }
 
 #emails-title{
@@ -109,9 +110,28 @@ a.foo:link{
 }
 
 .btn-dark{
+    width: 130px;
+    margin: 10px auto;
     font-size: 15px;
 }
 
 .btn-danger{
+    width: 130px;
     font-size: 15px;
+}
+
+#del-mail{
+    width: 34px;
+    height: 19px;
+    background-image: url(../images/_mail_del.png);
+}
+
+.dropdown-menu{
+    width: 50px;
+    height: 135px;
+    background-image: url(../images/message_button_back.jpg);
+}
+
+.lead{
+    color: white;
 }
