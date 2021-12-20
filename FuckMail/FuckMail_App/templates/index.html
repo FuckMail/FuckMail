@@ -66,8 +66,10 @@
                         {{username}}
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <button type="submit" class="btn btn-dark w-100" onclick="javascript:$('#myModal').modal('show')">Добавить аккаунт</button>
-                            <button type="submit" class="btn btn-danger w-100" onclick="location.href='logout'">Выход</button>
+                            <div class="col-xs-12 col-sm-4">
+                                <button type="button" class="btn btn-dark" onclick="javascript:$('#myModal').modal('show')">Добавить аккаунт</button>
+                                <button type="button" class="btn btn-danger" onclick="location.href='logout'">Выход</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -83,11 +85,17 @@
             <input type="text" id="basic-addon1" name="search_mail" class="form-control" placeholder="Mail Address" aria-label="Username" aria-describedby="basic-addon1">
         </div>
     </form>
+    <h6><p class="lead">Количество: <mark>{{mails_length}}</mark></p></h6>
     <div id="mails-scrollbar" class="list-group pre-scrollable">
         <form method="post" action="/profile">
+            {% if first_mail %}
+                <input style="color: black;" id="mail-{{first_mail}}" name="have_mail" value="{{first_mail}}" type="submit"
+                class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded" title="{{first_mail}}">
+            {% endif %}
             {% csrf_token %}
             {% for email in emails %}
-                <input id="emails-list-group-item" name="have_mail" value="{{email.address}}" type="submit" class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded">
+                <input id="mail-{{email}}" name="have_mail" value="{{email}}" type="submit" 
+                class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded" title="{{email}}">
             {% endfor %}
         </form>
     </div>
@@ -116,17 +124,35 @@
     </div>
     <div class="col-9">
     {% if messages %}
+    <div id="delMail" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Удаление</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>Вы точно хотите удалить почтовый адресс?</p>
+            </div>
+            <div class="modal-footer">
+              <button id="{{address}}" type="button" class="btn btn-danger" onclick="del_mail(this.id);">Да, удалить</button>
+            </div>
+          </div>
+        </div>
+    </div>
     <div class="alert alert-primary" role="alert">
-        <h4 id="messages-title">Messages(Incoming💬{{messages|length}}) <span id="mail_address" class="badge badge-dark"">{{address}}</span></h4>
+        <h4 id="messages-title">Messages(Incoming💬{{messages|length}}) <span id="mail_address" class="badge badge-dark"">{{address}}</span> <button type="button" id="del-mail" class="btn btn-light" onclick="javascript:$('#delMail').modal('show')"></button></h4>
     </div>
     <div class="accordion pre-scrollable p-6" id="accordionExample">
         {% for message in messages %}
             <div class="card">
-                <div class="card-header shadow p-3 mb-2 bg-white rounded" id="heading{{message.message_id}}">
+                <!--<div class="card-header shadow p-3 mb-2 bg-white rounded" id="heading{{message.message_id}}">-->
                     {% if message.visual %}
                         <h5>
                         <input style="color: #686868;" id="{{message.message_id}}" value="{{message.from_user}} - {{message.subject}}" type="submit" 
-                        class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded font-weight-bold"
+                        class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded font-weight"
                         data-toggle="collapse" data-target="#collapse{{message.message_id}}" aria-expanded="true" aria-controls="collapse{{message.message_id}}"
                         data-placement="right" title="{{message.subject}}" onclick="show_message(this.id);">
                         </h5>
@@ -138,7 +164,7 @@
                         data-placement="right" title="{{message.subject}}" onclick="show_message(this.id);">
                         </h5>
                     {% endif %}
-                </div>
+                <!--</div>-->
                 <div id="collapse{{message.message_id}}" class="collapse" aria-labelledby="heading{{message.message_id}}" data-parent="#accordionExample">
                     <div class="card-body">
                         <div class="bang">
