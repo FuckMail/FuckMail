@@ -123,49 +123,61 @@ def profile(request):
         return redirect("index")
 
 def add_account(request):
-    mail_address: str = request.POST["mail-address"]
-    mail_password: str = request.POST["mail-password"]
-    proxy_url: str = request.POST["proxy-url"]
+    if request.user.is_authenticated:
+        mail_address: str = request.POST["mail-address"]
+        mail_password: str = request.POST["mail-password"]
+        proxy_url: str = request.POST["proxy-url"]
 
-    # Check proxy format (alert message)
-    if len(proxy_url.split(":")) != 4:
-        # Set data for new account before redirect
-        data: dict = dict(zip(["status", "type", "message"],
-            [True, "Error", "Неверный формат адреса proxy!"]))
-        request.session["add_new_account"] = data
-    else:
-         # Check mail format (alert message)
-        if len(mail_address.split("@")) != 2:
+        # Check proxy format (alert message)
+        if len(proxy_url.split(":")) != 4:
             # Set data for new account before redirect
             data: dict = dict(zip(["status", "type", "message"],
-                [True, "Error", "Неверный формат адреса от почты!"]))
+                [True, "Error", "Неверный формат адреса proxy!"]))
             request.session["add_new_account"] = data
         else:
-            Mails.objects.create(
-                user_id=request.session["_auth_user_id"], address=mail_address,
-                password=mail_password, proxy_url=proxy_url)
-            # Set data for new account before redirect (alert message)
-            data: dict = dict(zip(["status", "type", "message"],
-                [True, "Success", "Аккаунт <b>%s</b> был успешно добавлен!" % mail_address]))
-            request.session["add_new_account"] = data
-    return redirect("profile")
+            # Check mail format (alert message)
+            if len(mail_address.split("@")) != 2:
+                # Set data for new account before redirect
+                data: dict = dict(zip(["status", "type", "message"],
+                    [True, "Error", "Неверный формат адреса от почты!"]))
+                request.session["add_new_account"] = data
+            else:
+                Mails.objects.create(
+                    user_id=request.session["_auth_user_id"], address=mail_address,
+                    password=mail_password, proxy_url=proxy_url)
+                # Set data for new account before redirect (alert message)
+                data: dict = dict(zip(["status", "type", "message"],
+                    [True, "Success", "Аккаунт <b>%s</b> был успешно добавлен!" % mail_address]))
+                request.session["add_new_account"] = data
+        return redirect("profile")
+    else:
+        return redirect("index")
 
 def message_more_info(request, payload):
-    data: dict = dict(zip(["message"], [CacheMessages.objects.get(message_id=payload).payload]))
-    return render(request, "message_more_info.html", data)
+    if request.user.is_authenticated:
+        data: dict = dict(zip(["message"], [CacheMessages.objects.get(message_id=payload).payload]))
+        return render(request, "message_more_info.html", data)
+    else:
+        return redirect("index")
 
 def read_message(request):
-    if request.is_ajax():
-        mail_address: QuerySet = CacheMessages.objects.filter(message_id=request.POST["message_id"]).get()
-        mail_address.visual = True
-        mail_address.save()
-    return HttpResponse(dumps(True), content_type="application/json")
+    if request.user.is_authenticated:
+        if request.is_ajax():
+            mail_address: QuerySet = CacheMessages.objects.filter(message_id=request.POST["message_id"]).get()
+            mail_address.visual = True
+            mail_address.save()
+        return HttpResponse(dumps(True), content_type="application/json")
+    else:
+        return redirect("index")
 
 def del_mail(request):
-    if request.is_ajax():
-        Mails.objects.filter(address=request.POST["mail_address"]).delete()
-        CacheMessages.objects.filter(address=request.POST["mail_address"]).delete()
-    return HttpResponse(dumps(True), content_type="application/json")
+    if request.user.is_authenticated:
+        if request.is_ajax():
+            Mails.objects.filter(address=request.POST["mail_address"]).delete()
+            CacheMessages.objects.filter(address=request.POST["mail_address"]).delete()
+        return HttpResponse(dumps(True), content_type="application/json")
+    else:
+        return redirect("index")
 
 def logout_user(request):
     logout(request)
