@@ -97,7 +97,7 @@ def profile(request):
                         data: dict = dict(zip(["message", "address"], [str(e), address]))
                         return render(request, "500.html", data)
                 if mails["status"] == "error":
-                    data: dict = dict(zip(["message"], [mails["message"]]))
+                    data: dict = dict(zip(["message", "address"], [mails["message"], address]))
                     return render(request, "500.html", data)
                 elif mails["status"] == "success":
                     messages: list = list(reversed(mails["messages"]))
@@ -149,6 +149,33 @@ def add_account(request):
                 data: dict = dict(zip(["status", "type", "message"],
                     [True, "Success", "Аккаунт <b>%s</b> был успешно добавлен!" % mail_address]))
                 request.session["add_new_account"] = data
+        return redirect("profile")
+    else:
+        return redirect("index")
+
+def add_few_accounts(request):
+    if request.user.is_authenticated:
+        user_id = request.session["_auth_user_id"]
+        content = request.POST["content"]
+        content_array = content.split("\n")
+        for i in range(0, len(content_array), 3):
+            mail_address = content_array[i].strip()
+            if not Mails.objects.filter(address=mail_address).exists():
+                password = content_array[i+1].strip()
+                proxy = content_array[i+2].strip()
+                Mails.objects.create(
+                    user_id=user_id, address=mail_address,
+                    password=password, proxy_url=proxy
+                )
+        #return HttpResponse(dumps(True), content_type="application/json")
+        return redirect("profile")
+    else:
+        return redirect("index")
+
+def del_all_accounts(request):
+    if request.user.is_authenticated:
+        user_id = request.session["_auth_user_id"]
+        Mails.objects.filter(user_id=user_id).delete()
         return redirect("profile")
     else:
         return redirect("index")
