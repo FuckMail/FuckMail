@@ -10,7 +10,7 @@ class Mails(models.Model):
     password = models.CharField(max_length=255, null=True, verbose_name="Email Password")
     proxy_url = models.CharField(max_length=255, verbose_name="Proxy URL")
     count_messages = models.IntegerField(null=True, verbose_name="Count messages")
-    create_at = models.DateTimeField(editable=True, default=datetime.now())
+    create_at = models.DateTimeField(editable=True, auto_now_add=True)
 
     def __str__(self):
         return "%s" % self.address
