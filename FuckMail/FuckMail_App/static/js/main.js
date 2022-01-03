@@ -1,9 +1,9 @@
-$('#basic-addon1').keypress(function(event){
+$('#basic-addon1').keypress(function (event) {
     var keycode = (event.keyCode ? event.keyCode : event.which);
-    if(keycode == '13'){}
+    if (keycode == '13') { }
 });
 
-function show_message(message_id){
+function show_message(message_id) {
     var elem = document.getElementById(message_id);
     elem.style.color = "#686868";
 
@@ -14,17 +14,17 @@ function show_message(message_id){
         body: data,
         contentType: 'application/json',
         headers: {
-          "X-Requested-With": "XMLHttpRequest",
-          "X-CSRFToken": getCookie("csrftoken")
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRFToken": getCookie("csrftoken")
         },
-    }).then(console.log(true))
+    });
 }
 
-function del_mail(mail_address){
+function del_mail(mail_address) {
     $('#delMail').modal('hide');
     document.getElementById("accordionExample").remove();
     document.getElementById("messages-title").textContent = "Messages is not found";
-    document.getElementById("mail-"+mail_address).remove();
+    document.getElementById("mail-" + mail_address).remove();
     var data = new FormData();
     data.append("mail_address", mail_address);
     fetch("del_mail/", {
@@ -32,14 +32,14 @@ function del_mail(mail_address){
         body: data,
         contentType: 'application/json',
         headers: {
-          "X-Requested-With": "XMLHttpRequest",
-          "X-CSRFToken": getCookie("csrftoken")
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRFToken": getCookie("csrftoken")
         },
-    }).then(console.log(true))
+    });
     window.location.replace("profile");
 }
 
-function del_is_not_found_mail(mail_address){
+function del_is_not_found_mail(mail_address) {
     $('#delMail').modal('hide');
     var data = new FormData();
     data.append("mail_address", mail_address);
@@ -48,14 +48,68 @@ function del_is_not_found_mail(mail_address){
         body: data,
         contentType: 'application/json',
         headers: {
-          "X-Requested-With": "XMLHttpRequest",
-          "X-CSRFToken": getCookie("csrftoken")
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRFToken": getCookie("csrftoken")
         },
-    }).then(console.log(true))
+    });
     window.location.replace("profile");
 }
 
-function return_main_page(){
+function return_main_page() {
+    window.location.replace("profile");
+}
+
+function get_file() {
+    var file = document.getElementById("file-browser").files[0];
+    if (file) {
+        var fileNameArray = file.name.split(".");
+        if (fileNameArray[fileNameArray.length - 1] != "txt") {
+            return alert("Формат файла является неправильным!");
+        }
+        var fileSize = file.size / 1024 / 1024;
+        if (fileSize > 50) {
+            return alert("Файл превышает размер!");
+        } else {
+            $('#addFewAccounts').modal('hide');
+            var reader = new FileReader();
+            reader.readAsText(file, "UTF-8");
+            var result = null;
+            reader.onload = function(e) {
+                var data = new FormData();
+                data.append("content", e.target.result);
+                fetch("add_few_accounts", {
+                    method: "POST",
+                    body: data,
+                    contentType: 'application/json',
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                        "X-CSRFToken": getCookie("csrftoken")
+                    },
+                });
+                /*var toastTrigger = document.getElementById('liveToastBtn');
+                var toastLiveExample = document.getElementById('liveToast');
+                if (toastTrigger) {
+                        var toast = new bootstrap.Toast(toastLiveExample)
+                        toast.show()
+                }*/
+            }
+            //window.location.replace("profile");
+        }
+    }
+    else {
+        return alert("Файл отсутствует!");
+    }
+}
+
+function del_all_accounts(){
+    fetch("del_all_accounts", {
+        method: "POST",
+        contentType: 'application/json',
+        headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRFToken": getCookie("csrftoken")
+        },
+    });
     window.location.replace("profile");
 }
 
@@ -74,18 +128,4 @@ function getCookie(name) {
         }
     }
     return cookieValue;
-    }
-    var csrftoken = getCookie('csrftoken');
-
-    function csrfSafeMethod(method) {
-        // these HTTP methods do not require CSRF protection
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-    }
-    $.ajaxSetup({
-        crossDomain: false, // obviates need for sameOrigin test
-        beforeSend: function(xhr, settings) {
-            if (!csrfSafeMethod(settings.type)) {
-                xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            }
-        }
-});
+}
