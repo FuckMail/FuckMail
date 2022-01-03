@@ -33,6 +33,52 @@
       </div>
 </div>
 
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <img src="..." class="rounded me-2" alt="...">
+        <strong class="me-auto">Bootstrap</strong>
+        <small>11 mins ago</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        Hello, world! This is a toast message.
+      </div>
+    </div>
+</div>
+
+<div id="addFewAccounts" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!--<form id="load-few-accounts" method="post" action="add_few_accounts" enctype="multipart/form-data">-->
+                <div class="wrapper">
+                    <h1>Загрузить аккаунты</h1>
+                    <div class="upload-container">
+                    <div class="border-container">
+                        <div class="icons fa-4x">
+                        <i class="fas fa-file-image" data-fa-transform="shrink-3 down-2 left-6 rotate--45"></i>
+                        <i class="fas fa-file-alt" data-fa-transform="shrink-2 up-4"></i>
+                        <i class="fas fa-file-pdf" data-fa-transform="shrink-3 down-2 right-6 rotate-45"></i>
+                        </div>
+                        <p>Загрузите файл<input id="file-browser" type="file">в формате .txt с вашего компьютера.<br>
+                            <small>Файл не должен превышать размер в 50МБ</small></p>
+                    </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    {% csrf_token %}
+                    <button id="liveToastBtn" type="button" class="btn btn-primary" name="save_accounts" onclick="get_file();">Сохранить</button>
+                </div>
+            <!--</form>-->
+        </div>
+    </div>
+</div>
+
 {% if is_new_account.status %}
     {% if is_new_account.type == 'Success' %}
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -68,6 +114,8 @@
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <div class="col-xs-12 col-sm-4">
                                 <button type="button" class="btn btn-dark" onclick="javascript:$('#myModal').modal('show')">Добавить аккаунт</button>
+                                <button type="button" class="btn btn-dark" onclick="javascript:$('#addFewAccounts').modal('show')">Добавить несколько аккаунтов</button>
+                                <button type="button" class="btn btn-dark" onclick="del_all_accounts();">Удалить все аккаунты</button>
                                 <button type="button" class="btn btn-danger" onclick="location.href='logout'">Выход</button>
                             </div>
                         </div>
@@ -115,6 +163,8 @@
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <div class="col-xs-12 col-sm-4">
                                     <button type="button" class="btn btn-dark" onclick="javascript:$('#myModal').modal('show')">Добавить аккаунт</button>
+                                    <button type="button" class="btn btn-dark" onclick="javascript:$('#addFewAccounts').modal('show')">Добавить несколько аккаунтов</button>
+                                    <button type="button" class="btn btn-dark" onclick="del_all_accounts();">Удалить все аккаунты</button>
                                     <button type="button" class="btn btn-danger" onclick="location.href='logout'">Выход</button>
                                 </div>
                             </div>
@@ -146,14 +196,18 @@
                     <div id="emails-title-is-not-found" class="col-sm">
                         <h4 id="is_not_emails-title">Emails is not found</h4>
                     </div>
-                    <div class="col-sm text-right">
+                    <div id="username" class="col-sm text-right">
                         <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button id="dropdownMenuButton" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             {{username}}
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <button type="submit" class="btn btn-dark w-100" onclick="javascript:$('#myModal').modal('show')">Добавить аккаунт</button>
-                                <button type="submit" class="btn btn-danger w-100" onclick="location.href='logout'">Выход</button>
+                                <div class="col-xs-12 col-sm-4">
+                                    <button type="button" class="btn btn-dark" onclick="javascript:$('#myModal').modal('show')">Добавить аккаунт</button>
+                                    <button type="button" class="btn btn-dark" onclick="javascript:$('#addFewAccounts').modal('show')">Добавить несколько аккаунтов</button>
+                                    <button type="button" class="btn btn-dark" onclick="del_all_accounts();">Удалить все аккаунты</button>
+                                    <button type="button" class="btn btn-danger" onclick="location.href='logout'">Выход</button>
+                                </div>
                             </div>
                         </div>
                     </div>
