@@ -133,7 +133,7 @@
             <input type="text" id="basic-addon1" name="search_mail" class="form-control" placeholder="Mail Address" aria-label="Username" aria-describedby="basic-addon1">
         </div>
     </form>
-    <h6><p class="lead">Количество: <mark>{{mails_length}}</mark></p></h6>
+    <h5 id="mails-count">Количество: <span id="mails-count-number" class="badge bg-secondary">{{mails_length}}</span></h5>
     <div id="mails-scrollbar" class="list-group pre-scrollable">
         <form method="post" action="/profile">
             {% if first_mail %}
@@ -182,7 +182,7 @@
                 <input type="text" id="basic-addon1" name="search_mail" class="form-control" placeholder="Mail Address" aria-label="Username" aria-describedby="basic-addon1">
             </div>
         </form>
-        <h6><p class="lead">Количество: <mark>{{mails_length}}</mark></p></h6>
+        <h5 id="mails-count">Количество: <span id="mails-count-number" class="badge bg-secondary">{{mails_length}}</span></h5>
         <div id="mails-scrollbar" class="list-group pre-scrollable">
             <form method="post" action="/profile">
                     <input style="color: black;" id="mail-{{first_mail}}" name="have_mail" value="{{first_mail}}" type="submit"
