@@ -3,6 +3,30 @@ $('#basic-addon1').keypress(function (event) {
     if (keycode == '13') { }
 });
 
+$(document).on("contextmenu", ".list-group-item", function(e){
+    var mails_count_number = document.getElementById("mails-count-number");
+    mails_count_number.innerText = mails_count_number.innerText - 1;
+    var x = event.clientX, y = event.clientY,
+    mail_address = document.elementFromPoint(x, y);
+    mail_address.remove();
+    var data = new FormData();
+    data.append("mail_address", mail_address.value);
+    fetch("del_mail_from_list/", {
+        method: "POST",
+        body: data,
+        contentType: 'application/json',
+        headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRFToken": getCookie("csrftoken")
+        },
+    });
+    return false;
+});
+
+function return_main_page() {
+    window.location.replace("profile");
+};
+
 function show_message(message_id) {
     var elem = document.getElementById(message_id);
     elem.style.color = "#686868";
@@ -18,7 +42,7 @@ function show_message(message_id) {
             "X-CSRFToken": getCookie("csrftoken")
         },
     });
-}
+};
 
 function del_mail(mail_address) {
     $('#delMail').modal('hide');
@@ -36,8 +60,8 @@ function del_mail(mail_address) {
             "X-CSRFToken": getCookie("csrftoken")
         },
     });
-    window.location.replace("profile");
-}
+    return_main_page();
+};
 
 function del_is_not_found_mail(mail_address) {
     $('#delMail').modal('hide');
@@ -52,11 +76,7 @@ function del_is_not_found_mail(mail_address) {
             "X-CSRFToken": getCookie("csrftoken")
         },
     });
-    window.location.replace("profile");
-}
-
-function return_main_page() {
-    window.location.replace("profile");
+    return_main_page();
 }
 
 function get_file() {
@@ -110,7 +130,7 @@ function del_all_accounts(){
             "X-CSRFToken": getCookie("csrftoken")
         },
     });
-    window.location.replace("profile");
+    return_main_page();
 }
 
 function getCookie(name) {
