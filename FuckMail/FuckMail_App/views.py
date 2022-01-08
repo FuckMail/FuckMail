@@ -206,6 +206,11 @@ def del_mail(request):
     else:
         return redirect("index")
 
+def del_mail_from_list(request):
+    mail_address = request.POST["mail_address"]
+    Mails.objects.filter(address=mail_address).delete()
+    return HttpResponse(dumps(True), content_type="application/json")
+
 def logout_user(request):
     logout(request)
     return redirect("index")
