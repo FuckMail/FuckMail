@@ -189,3 +189,7 @@ a.foo:link{
     color: #95afc0;
     opacity: 0.55;
   }
+
+#mails-count{
+    color: white;
+}
