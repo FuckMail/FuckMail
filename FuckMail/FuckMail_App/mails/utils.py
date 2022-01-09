@@ -19,16 +19,16 @@ IMAP_SERVERS = {
 }
 
 class MailsCore:
-    def __init__(self, mail_address: str):
+    def __init__(self, user_id: int, mail_address: str):
         """Initialzation
         Call functions: get_mail_data; get_proxy_url
         :param: mail_address
         :type: str
         """
-
+        self.user_id = user_id
         self.mail_address = mail_address
-        self.mail_data = self.get_mail_data(mail_address=self.mail_address)
-        self.proxy_address = self.get_proxy_url(mail_address=self.mail_address)
+        self.mail_data = self.get_mail_data(user_id=user_id, mail_address=self.mail_address)
+        self.proxy_address = self.get_proxy_url(user_id=user_id, mail_address=self.mail_address)
 
     def all(self):
         """This is function get all messages
@@ -44,10 +44,10 @@ class MailsCore:
                 proxy = loads(requests.post("https://api.myip.com").text)
             except Exception as e:
                 return {"status": "error", "message": str(e)}
-            messages = self.check_last_messages(self.mail_address)
+            messages = self.check_last_messages(self.user_id, self.mail_address)
             return {"status": "success", "proxy": proxy, "messages": messages}
 
-    def check_last_messages(self, mail_address: str):
+    def check_last_messages(self, user_id: int, mail_address: str):
         """This is function check last message
         :param: mail_address
         :type: str
@@ -55,7 +55,7 @@ class MailsCore:
         :rtype: CacheMessages
         """
 
-        mails = CacheMessages.objects.filter(address=mail_address)
+        mails = CacheMessages.objects.filter(user_id=user_id, address=mail_address)
         host = self.get_host(mail_address=mail_address)
         mail = imaplib.IMAP4_SSL(host)
         mail.login(self.mail_data[0], self.mail_data[1])
@@ -86,12 +86,12 @@ class MailsCore:
                             CacheMessages.objects.create(
                                 message_id=message_id, address=mail_address,
                                 from_user=self.decode_format(message["from"]), subject=self.decode_format(message["subject"]),
-                                date=self.date_format(message["date"]), payload=decode_message_payload
+                                date=self.date_format(message["date"]), payload=decode_message_payload, user_id=user_id
                             )
-            _messages = CacheMessages.objects.filter(address=mail_address).order_by("date").all()
+            _messages = CacheMessages.objects.filter(user_id=user_id, address=mail_address).order_by("date").all()
             return _messages
         else:
-            last_mail_date = CacheMessages.objects.filter(address=mail_address).order_by("-date")[0]
+            last_mail_date = CacheMessages.objects.filter(user_id=user_id, address=mail_address).order_by("-date")[0]
             last_date = dt.strftime(last_mail_date.date, "%d-%b-%Y")
             code, data = mail.search(None, '(SINCE "%s" UNSEEN)' % last_date)
             if code == "OK" and bool(data[0].decode("utf-8")):
@@ -118,12 +118,12 @@ class MailsCore:
                             CacheMessages.objects.create(
                                 message_id=message_id, address=mail_address,
                                 from_user=self.decode_format(message["from"]), subject=self.decode_format(message["subject"]),
-                                date=self.date_format(message["date"]), payload=decode_message_payload
+                                date=self.date_format(message["date"]), payload=decode_message_payload, user_id=user_id
                             )
-            _messages = CacheMessages.objects.filter(address=mail_address).order_by("date").all()
+            _messages = CacheMessages.objects.filter(user_id=user_id, address=mail_address).order_by("date").all()
             return _messages
 
-    def get_mail_data(self, mail_address: str):
+    def get_mail_data(self, user_id: int, mail_address: str):
         """This is function get mail data (address and password)
         :param: mail_address
         :type: str
@@ -131,10 +131,10 @@ class MailsCore:
         :rtype: tuple
         """
 
-        data = Mails.objects.filter(address=mail_address).get()
+        data = Mails.objects.filter(user_id=user_id, address=mail_address).get()
         return data.address, data.password
 
-    def get_proxy_url(self, mail_address: str):
+    def get_proxy_url(self, user_id: int, mail_address: str):
         """This is function get proxy from mail data
         :param: mail_address
         :type: str
@@ -142,7 +142,7 @@ class MailsCore:
         :rtype: str
         """
 
-        mail = Mails.objects.filter(address=mail_address).get()
+        mail = Mails.objects.filter(user_id=user_id, address=mail_address).get()
         return mail.proxy_url
 
     def get_host(self, mail_address: str):
