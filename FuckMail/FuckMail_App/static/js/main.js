@@ -23,7 +23,7 @@ $(document).on("contextmenu", ".list-group-item", function(e){
     return false;
 });
 
-function return_main_page() {
+function redirect_to_main_page() {
     window.location.replace("profile");
 };
 
@@ -60,7 +60,7 @@ function del_mail(mail_address) {
             "X-CSRFToken": getCookie("csrftoken")
         },
     });
-    return_main_page();
+    redirect_to_main_page();
 };
 
 function del_is_not_found_mail(mail_address) {
@@ -76,7 +76,7 @@ function del_is_not_found_mail(mail_address) {
             "X-CSRFToken": getCookie("csrftoken")
         },
     });
-    return_main_page();
+    redirect_to_main_page();
 }
 
 function get_file() {
@@ -93,27 +93,27 @@ function get_file() {
             $('#addFewAccounts').modal('hide');
             var reader = new FileReader();
             reader.readAsText(file, "UTF-8");
-            var result = null;
             reader.onload = function(e) {
                 var data = new FormData();
                 data.append("content", e.target.result);
-                fetch("add_few_accounts", {
+                fetch("add_few_accounts/", {
                     method: "POST",
                     body: data,
                     contentType: 'application/json',
                     headers: {
                         "X-Requested-With": "XMLHttpRequest",
                         "X-CSRFToken": getCookie("csrftoken")
-                    },
+                    }
+                }).then(function(response){
+                    console.log(response.json().then(
+                        function(data){
+                            if (data == true){
+                                redirect_to_main_page();
+                            }
+                        }
+                    ));
                 });
-                /*var toastTrigger = document.getElementById('liveToastBtn');
-                var toastLiveExample = document.getElementById('liveToast');
-                if (toastTrigger) {
-                        var toast = new bootstrap.Toast(toastLiveExample)
-                        toast.show()
-                }*/
             }
-            //window.location.replace("profile");
         }
     }
     else {
@@ -122,7 +122,7 @@ function get_file() {
 }
 
 function del_all_accounts(){
-    fetch("del_all_accounts", {
+    fetch("del_all_accounts/", {
         method: "POST",
         contentType: 'application/json',
         headers: {
@@ -130,7 +130,7 @@ function del_all_accounts(){
             "X-CSRFToken": getCookie("csrftoken")
         },
     });
-    return_main_page();
+    redirect_to_main_page();
 }
 
 function getCookie(name) {
