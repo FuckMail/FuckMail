@@ -1,13 +1,17 @@
+import traceback
 from json import dumps
 from hashlib import md5
 from datetime import datetime
 
+from django.conf import settings
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.db.models.query import QuerySet
 from rest_framework.generics import ListAPIView
+from loguru import logger
+#import requests
 
 from .models import *
 from .serializers import *
@@ -43,10 +47,17 @@ def index(request):
             data: dict = dict()
             username: str = request.POST["username"]
             password: str = request.POST["password"]
+            recaptcha_response = request.POST.get("g-recaptcha-response")
             hash_password: str = md5(password.encode("utf-8")).hexdigest()
             if not username or not password:
                 message: str = "Поля не должны оставаться пустыми!"
-                data: dict = dict(zip(["message"], [message]))
+                data: dict = dict(zip(["message", "GOOGLE_RECAPTCHA_PUBLIC_KEY"],
+                                    [message, settings.GOOGLE_RECAPTCHA_PUBLIC_KEY]))
+                return render(request, "login.html", data)
+            elif not bool(recaptcha_response):
+                message: str = "Неверная reCAPTCHA! Попробуйте снова."
+                data: dict = dict(zip(["message", "GOOGLE_RECAPTCHA_PUBLIC_KEY"],
+                                    [message, settings.GOOGLE_RECAPTCHA_PUBLIC_KEY]))
                 return render(request, "login.html", data)
 
             if "register-button" in request.POST:
@@ -57,11 +68,20 @@ def index(request):
                         return redirect("profile")
                     else:
                         message: str = "Пользователь с таким юзернейм существует!"
-                        data: dict = dict(zip(["message"], [message]))
+                        data: dict = dict(zip(["message", "GOOGLE_RECAPTCHA_PUBLIC_KEY"],
+                                            [message, settings.GOOGLE_RECAPTCHA_PUBLIC_KEY]))
                         return render(request, "login.html", data)
             elif "login-button" in request.POST:
                 user: QuerySet = User.objects.filter(username=username, password=hash_password)
                 if user.exists():
+                    """
+                    url = 'https://www.google.com/recaptcha/api/siteverify'
+                    values = {
+                        'secret': settings.GOOGLE_RECAPTCHA_SECRET_KEY,
+                        'response': recaptcha_response
+                    }
+                    response = requests.post(url, data=dumps(values), headers={ "Content-Type": "application/x-www-form-urlencoded" })
+                    """
                     user: QuerySet = user.get()
                     user.last_login = datetime.now()
                     user.save()
@@ -69,9 +89,11 @@ def index(request):
                     return redirect("profile")
                 else:
                     message: str = "Пользователь не существует!"
-                    data: dict = dict(zip(["message"], [message]))
+                    data: dict = dict(zip(["message", "GOOGLE_RECAPTCHA_PUBLIC_KEY"],
+                                        [message, settings.GOOGLE_RECAPTCHA_PUBLIC_KEY]))
                     return render(request, "login.html", data)
-        return render(request, "login.html")
+        data: dict = dict(zip(["GOOGLE_RECAPTCHA_PUBLIC_KEY"], [settings.GOOGLE_RECAPTCHA_PUBLIC_KEY]))
+        return render(request, "login.html", data)
 
 def profile(request):
     if request.user.is_authenticated:
@@ -80,15 +102,17 @@ def profile(request):
         except KeyError:
             is_new_account: dict = {"status": False}
         request.session["add_new_account"] = {"status": False}
-        username: str = User.objects.get(pk=request.session["_auth_user_id"]).username
-        emails: QuerySet = Mails.objects.filter(user_id=int(request.session["_auth_user_id"])).all()
+        user_id = request.session["_auth_user_id"]
+        username: str = User.objects.get(pk=user_id).username
+        emails: QuerySet = Mails.objects.filter(user_id=int(user_id)).all()
         if request.POST:
             data: dict = dict()
             if "have_mail" in request.POST:
                 address: str = request.POST["have_mail"]
                 try:
-                    mails: dict = MailsCore(mail_address=address).all()
+                    mails: dict = MailsCore(user_id=user_id, mail_address=address).all()
                 except Exception as e:
+                    logger.error(traceback.format_exc())
                     if str(e) == "Mails matching query does not exist.":
                         data: dict = dict(zip(["emails", "username", "is_new_account"],
                             [emails, username, is_new_account]))
@@ -160,15 +184,14 @@ def add_few_accounts(request):
         content_array = content.split("\n")
         for i in range(0, len(content_array), 3):
             mail_address = content_array[i].strip()
-            if not Mails.objects.filter(address=mail_address).exists():
+            if not Mails.objects.filter(user_id=user_id, address=mail_address).exists():
                 password = content_array[i+1].strip()
                 proxy = content_array[i+2].strip()
                 Mails.objects.create(
                     user_id=user_id, address=mail_address,
                     password=password, proxy_url=proxy
                 )
-        #return HttpResponse(dumps(True), content_type="application/json")
-        return redirect("profile")
+        return HttpResponse(dumps(True), content_type="application/json")
     else:
         return redirect("index")
 
@@ -182,7 +205,8 @@ def del_all_accounts(request):
 
 def message_more_info(request, payload):
     if request.user.is_authenticated:
-        data: dict = dict(zip(["message"], [CacheMessages.objects.get(message_id=payload).payload]))
+        user_id = request.session["_auth_user_id"]
+        data: dict = dict(zip(["message"], [CacheMessages.objects.get(user_id=user_id, message_id=payload).payload]))
         return render(request, "message_more_info.html", data)
     else:
         return redirect("index")
@@ -190,7 +214,8 @@ def message_more_info(request, payload):
 def read_message(request):
     if request.user.is_authenticated:
         if request.is_ajax():
-            mail_address: QuerySet = CacheMessages.objects.filter(message_id=request.POST["message_id"]).get()
+            user_id = request.session["_auth_user_id"]
+            mail_address: QuerySet = CacheMessages.objects.filter(user_id=user_id, message_id=request.POST["message_id"]).get()
             mail_address.visual = True
             mail_address.save()
         return HttpResponse(dumps(True), content_type="application/json")
@@ -200,16 +225,21 @@ def read_message(request):
 def del_mail(request):
     if request.user.is_authenticated:
         if request.is_ajax():
-            Mails.objects.filter(address=request.POST["mail_address"]).delete()
-            CacheMessages.objects.filter(address=request.POST["mail_address"]).delete()
+            user_id = request.session["_auth_user_id"]
+            Mails.objects.filter(user_id=user_id, address=request.POST["mail_address"]).delete()
+            CacheMessages.objects.filter(user_id=user_id, address=request.POST["mail_address"]).delete()
         return HttpResponse(dumps(True), content_type="application/json")
     else:
         return redirect("index")
 
 def del_mail_from_list(request):
-    mail_address = request.POST["mail_address"]
-    Mails.objects.filter(address=mail_address).delete()
-    return HttpResponse(dumps(True), content_type="application/json")
+    if request.user.is_authenticated:
+        user_id = request.session["_auth_user_id"]
+        mail_address = request.POST["mail_address"]
+        Mails.objects.filter(user_id=user_id, address=mail_address).delete()
+        return HttpResponse(dumps(True), content_type="application/json")
+    else:
+        return redirect("index")
 
 def logout_user(request):
     logout(request)
