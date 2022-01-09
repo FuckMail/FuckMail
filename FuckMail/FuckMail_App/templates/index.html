@@ -33,20 +33,6 @@
       </div>
 </div>
 
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="toast-header">
-        <img src="..." class="rounded me-2" alt="...">
-        <strong class="me-auto">Bootstrap</strong>
-        <small>11 mins ago</small>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-      </div>
-      <div class="toast-body">
-        Hello, world! This is a toast message.
-      </div>
-    </div>
-</div>
-
 <div id="addFewAccounts" class="modal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -238,7 +224,7 @@
         </div>
     </div>
     <div class="alert alert-primary" role="alert">
-        <h4 id="messages-title">Messages(Incoming💬{{messages|length}}) <span id="mail_address" class="badge badge-dark"">{{address}}</span> <button type="button" id="del-mail" class="btn btn-light" onclick="javascript:$('#delMail').modal('show')"></button></h4>
+        <h4 id="messages-title">Messages(Incoming💬{{messages|length}}) <span id="mail_address" class="badge badge-dark"">{{address}}</span> <button type="button" id="del-mail" class="btn btn-danger" onclick="javascript:$('#delMail').modal('show')"></button></h4>
     </div>
     <div class="accordion pre-scrollable p-6" id="accordionExample">
         {% for message in messages %}
