@@ -20,6 +20,7 @@ class Mails(models.Model):
         verbose_name_plural = "Emails"
 
 class CacheMessages(models.Model):
+    user_id = models.IntegerField(null=True)
     message_id = models.CharField(max_length=255, null=True, verbose_name="Message ID")
     address = models.CharField(max_length=255, null=True, verbose_name="Email Address")
     from_user = models.CharField(max_length=255, null=True, verbose_name="From")
