@@ -50,7 +50,7 @@ h5, legend{
 }
 input[name="have_mail"]{
     height: 45px;
-    text-align:center;
+    text-align: center;
     font-weight: bold;
     color: white;
     background-image: url(../images/message_button_back.jpg);
@@ -79,7 +79,7 @@ input[name="have_mail"]{
     height: 1080px;
 }
 
-.container{
+.container[name="login-container"]{
     width: 350px;
 }
 
@@ -127,6 +127,10 @@ a.foo:link{
     width: 34px;
     height: 19px;
     background-image: url(../images/mail_del.png);
+}
+
+#help-container{
+    width: 600px;
 }
 
 /*main actions*/
