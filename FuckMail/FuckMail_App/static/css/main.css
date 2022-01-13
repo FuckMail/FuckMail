@@ -1,5 +1,5 @@
 body{
-    background-image: url(../images/background.png);
+    background-color: #0F2027;
     overflow-x: hidden;
     overflow-y: hidden;
 }
@@ -76,7 +76,6 @@ input[name="have_mail"]{
 }
 
 .container-xl{
-    background-image: url(../images/background.png);
     height: 750px;
 }
 
@@ -132,7 +131,7 @@ a.foo:link{
 
 /*main actions*/
 .dropdown-menu{
-    background-image: url(../images/_message_button_back.jpg);
+    background-color: #2C5364;
 }
 
 .lead{
