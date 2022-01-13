@@ -59,8 +59,11 @@
                   </div>
               </div>
               <div class="modal-footer">
+                <div class="d-grid gap-2">
                   {% csrf_token %}
+                  <button class="btn btn-primary" type="button" onclick="help_addFileFormat();">Получить помощь</button>
                   <button id="liveToastBtn" type="button" class="btn btn-primary" name="save_accounts" onclick="get_file();">Сохранить</button>
+                </div>
               </div>
           <!--</form>-->
       </div>
