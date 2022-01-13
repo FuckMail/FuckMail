@@ -141,6 +141,10 @@ function del_all_accounts(){
     redirect_to_main_page();
 }
 
+function help_addFileFormat(){
+    window.location.href = "help/add_file_format.html";
+}
+
 function getCookie(name) {
     var cookieValue = null;
     var i = 0;
