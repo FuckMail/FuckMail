@@ -1,3 +1,5 @@
+import mimetypes
+import os
 import traceback
 from json import dumps
 from hashlib import md5
@@ -240,6 +242,21 @@ def del_mail_from_list(request):
         return HttpResponse(dumps(True), content_type="application/json")
     else:
         return redirect("index")
+
+def help(request, fileName):
+    if request.user.is_authenticated:
+        return render(request, f"help/{fileName}")
+    else:
+        return redirect("index")
+
+def download_help_file(request, filename="accounts.txt"):
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    filepath = BASE_DIR + r"/FuckMail_App/media/" + filename
+    path = open(filepath, "rb")
+    mime_type, _ = mimetypes.guess_type(filepath)
+    response = HttpResponse(path, content_type=mime_type)
+    response["Content-Disposition"] = "attachment; filename=%s" % filename
+    return response
 
 def logout_user(request):
     logout(request)
