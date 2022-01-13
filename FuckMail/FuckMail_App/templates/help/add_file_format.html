@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title%}Help{% endblock %}
+{% load static %}
+
+{% block body %}
+    <br>
+    <div id="help-container" class="container" style="background-color: white;">
+        <div class="row">
+            <div class="col-sm">
+                <figure class="figure">
+                    <figcaption class="figure-caption"><span class="border border-success">✔️Правильный формат</span></figcaption>
+                    <br>
+                    <img src="../static/images/help/add_account_format_true.jpg" class="figure-img img-fluid rounded">
+                </figure>
+            </div>
+            <div class="col-sm">
+                <figure class="figure">
+                    <figcaption class="figure-caption"><span class="border border-danger">❌Неправильный формат</span></figcaption>
+                    <br>
+                    <img src="../static/images/help/add_account_format_false.jpg" class="figure-img img-fluid rounded">
+                </figure>
+            </div>
+        </div>
+        <a href="/download_help_file/" class="link-primary">Ничего не понятно :( Хочу загрузить файл и лично глянуть!</a>
+    </div>
+{% endblock %}
