@@ -4,8 +4,8 @@ $('#basic-addon1').keypress(function (event) {
 });
 
 $(document).on("contextmenu", ".list-group-item", function(e){
-    var mails_count_number = document.getElementById("mails-count-number");
-    mails_count_number.innerText = mails_count_number.innerText - 1;
+    var mails_count_number = document.getElementById("title-mails-count");
+    mails_count_number.innerText = `📨Mails - ${ mails_count_number.innerText.split("-")[1] - 1 }`;
     var x = event.clientX, y = event.clientY,
     mail_address = document.elementFromPoint(x, y);
     mail_address.remove();
@@ -26,6 +26,14 @@ $(document).on("contextmenu", ".list-group-item", function(e){
 function redirect_to_main_page() {
     window.location.replace("profile");
 };
+
+function add_account_modal(){
+    $('#myModal').modal('show');
+}
+
+function add_few_accounts_modal(){
+    $('#addFewAccounts').modal('show');
+}
 
 function show_message(message_id) {
     var elem = document.getElementById(message_id);
