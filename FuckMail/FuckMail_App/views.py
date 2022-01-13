@@ -128,10 +128,10 @@ def profile(request):
                 elif mails["status"] == "success":
                     messages: list = list(reversed(mails["messages"]))
             elif "search_mail" in request.POST:
-                mail = Mails.objects.filter(address=request.POST["search_mail"])
+                mail = Mails.objects.filter(user_id=user_id, address=request.POST["search_mail"])
                 if mail.exists():
                     address: str = request.POST["search_mail"]
-                    messages: list = list(reversed(CacheMessages.objects.filter(address=address).order_by("date").all()))
+                    messages: list = list(reversed(CacheMessages.objects.filter(user_id=user_id, address=address).order_by("date").all()))
                 else:
                     message: str = "Account is not found!"
                     data: dict = dict(zip(["message"], [message]))
