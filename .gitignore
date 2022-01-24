@@ -10,3 +10,5 @@ FuckMail/db.sqlite3
 FuckMail/celerybeat-schedule.bak
 FuckMail/celerybeat-schedule.dat
 FuckMail/celerybeat-schedule.dir
+
+config.yaml
