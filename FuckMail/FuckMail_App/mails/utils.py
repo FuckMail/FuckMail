@@ -4,7 +4,7 @@ import socket
 import imaplib
 from json import loads
 from hashlib import md5
-from datetime import datetime as dts
+from datetime import datetime as dt
 from dateutil import parser
 
 import socks
