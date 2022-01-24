@@ -17,10 +17,10 @@
                   </button>
                 </div>
                 <div class="modal-body">
-                  <p>Вы точно хотите удалить почтовый адресс?</p>
+                  <p>Are you sure you want to delete your mail address?</p>
                 </div>
                 <div class="modal-footer">
-                  <button id="{{address}}" type="button" class="btn btn-danger" onclick="del_is_not_found_mail(this.id);">Да, удалить</button>
+                  <button id="{{address}}" type="button" class="btn btn-danger" onclick="del_is_not_found_mail(this.id);">Yes, delete</button>
                 </div>
               </div>
             </div>
@@ -33,10 +33,10 @@
         </div>
         {% if message != "Account is not found!" %}
             <div>
-                <button type="button" id="del-mail" class="btn btn-danger" onclick="javascript:$('#delMail').modal('show')">Удалить адресс</button>
+                <button type="button" id="del-mail" class="btn btn-danger" onclick="javascript:$('#delMail').modal('show')">Delete address</button>
             </div>
         {% endif %}
-        <button type="button" id="redirect-to-main-page" class="btn btn-light" onclick="redirect_to_main_page();">Вернуться</button>
+        <button type="button" id="redirect-to-main-page" class="btn btn-light" onclick="redirect_to_main_page();">Back</button>
         <div class="astronaut">
         <img src="https://images.vexels.com/media/users/3/152639/isolated/preview/506b575739e90613428cdb399175e2c8-space-astronaut-cartoon-by-vexels.png" alt="" class="src">
         </div>
