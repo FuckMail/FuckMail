@@ -2,12 +2,12 @@
 {% block title%}FuckMail{% endblock %}
 
 {% block body %}
-<!-- Add account modal -->
+<!-- Add account (modal) -->
 <div id="myModal" class="modal" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Добавить аккаунт</h4>
+        <h4 class="modal-title">Add account</h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -27,14 +27,14 @@
           </div>
           <div class="modal-footer">
               {% csrf_token %}
-              <button type="submit" class="btn btn-primary" name="save_account">Сохранить</button>
+              <button type="submit" class="btn btn-primary" name="save_account">Save</button>
           </div>
       </form>
       </div>
     </div>
 </div>
 
-<!-- Add few accounts modal -->
+<!-- Add few accounts (modal) -->
 <div id="addFewAccounts" class="modal" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -45,7 +45,7 @@
           </div>
           <!--<form id="load-few-accounts" method="post" action="add_few_accounts" enctype="multipart/form-data">-->
               <div class="wrapper">
-                  <h1>Загрузить аккаунты</h1>
+                  <h1>Load accounts</h1>
                   <div class="upload-container">
                   <div class="border-container">
                       <div class="icons fa-4x">
@@ -53,20 +53,47 @@
                       <i class="fas fa-file-alt" data-fa-transform="shrink-2 up-4"></i>
                       <i class="fas fa-file-pdf" data-fa-transform="shrink-3 down-2 right-6 rotate-45"></i>
                       </div>
-                      <p>Загрузите файл<input id="file-browser" type="file">в формате .txt с вашего компьютера.<br>
-                          <small>Файл не должен превышать размер в 50МБ</small></p>
+                      <!--<p>Upload file <input id="file-upload" type="file" class="custom-file-upload"> in .txt format from your computer.<br>
+                          <small>File must not be larger than 50MB</small></p>-->
+                        <p><label class="custom-file-upload"><input id="file" type="file"/>Choose file</label>
+                          <br>
+                          Upload file in .txt format from your computer.
+                          <br>
+                          <small>File must not be larger than 50MB</small>
+                        </p>
                   </div>
                   </div>
+                  <br>
               </div>
               <div class="modal-footer">
                 <div class="d-grid gap-2">
                   {% csrf_token %}
-                  <button class="btn btn-primary" type="button" onclick="help_addFileFormat();">Получить помощь</button>
-                  <button id="liveToastBtn" type="button" class="btn btn-primary" name="save_accounts" onclick="get_file();">Сохранить</button>
+                  <button class="btn btn-primary" type="button" onclick="help_addFileFormat();">Get help</button>
+                  <button id="liveToastBtn" type="button" class="btn btn-primary" name="save_accounts" onclick="get_file();">Save</button>
                 </div>
               </div>
           <!--</form>-->
       </div>
+  </div>
+</div>
+
+<!-- Delete all accounts (modal) -->
+<div id="deleteAllAccounts" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Delete all accounts</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete all accounts?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" onclick="del_all_accounts();">Yes, delete</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -109,13 +136,13 @@
               </button>
               <div class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
                   <!--<div class="col-xs-12 col-sm-4">-->
-                  <button type="button" class="btn btn-danger w-100" onclick="location.href='logout'">Выход</button>
+                  <button type="button" class="btn btn-danger w-100" onclick="location.href='logout'">LogOut</button>
                   <!--</div>-->
               </div>
           </div>
-          <button type="button" class="btn btn-dark w-100" onclick="add_account_modal();">Добавить аккаунт</button>
-          <button type="button" class="btn btn-dark w-100" onclick="add_few_accounts_modal();">Добавить несколько аккаунтов</button>
-          <button type="button" class="btn btn-dark w-100" onclick="del_all_accounts();">Удалить все аккаунты</button>
+          <button type="button" class="btn btn-dark w-100" onclick="add_account_modal();">Add account</button>
+          <button type="button" class="btn btn-dark w-100" onclick="add_few_accounts_modal();">Add few accounts</button>
+          <button type="button" class="btn btn-dark w-100" onclick="deleteAllAccounts_modal();">Delete all accounts</button>
         </div>
       </div>
       <div class="col-3">
@@ -143,7 +170,7 @@
                         class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded" title="{{email}}">
                     {% endfor %}
                 </form>
-              </div>
+              </div>s
             {% else %}
               {% if first_mail %}
               <form method="post" action="/profile">
@@ -157,6 +184,7 @@
               </form>
               <div id="mails-scrollbar" class="list-group pre-scrollable">
                   <form method="post" action="/profile">
+                        {% csrf_token %}
                         <input style="color: black;" id="mail-{{first_mail}}" name="have_mail" value="{{first_mail}}" type="submit"
                         class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded" title="{{first_mail}}">
                   </form>
@@ -167,39 +195,39 @@
       </div>
       <div class="col-7">
           <div class="p-3">
-            <h5>📤Messages - {{messages|length}}</h5>
+            <h5 id="messages-count">📤Messages - {{messages|length}}</h5>
             {% if messages %}
             <div class="accordion pre-scrollable h-100" id="accordionExample">
               {% for message in messages %}
                   <div class="card">
-                      <!--<div class="card-header shadow p-3 mb-2 bg-white rounded" id="heading{{message.message_id}}">-->
-                          {% if message.visual %}
-                              <h5>
-                              <input style="color: #686868;" id="{{message.message_id}}" value="{{message.from_user}} - {{message.subject}}" type="submit" 
-                              class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded font-weight"
-                              data-toggle="collapse" data-target="#collapse{{message.message_id}}" aria-expanded="true" aria-controls="collapse{{message.message_id}}"
-                              data-placement="right" title="{{message.subject}}" onclick="show_message(this.id);">
-                              </h5>
-                          {% else %}
-                              <h5>
-                              <input style="color: #000000;" id="{{message.message_id}}" value="{{message.from_user}} - {{message.subject}}" type="submit" 
-                              class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded font-weight-bold"
-                              data-toggle="collapse" data-target="#collapse{{message.message_id}}" aria-expanded="true" aria-controls="collapse{{message.message_id}}"
-                              data-placement="right" title="{{message.subject}}" onclick="show_message(this.id);">
-                              </h5>
-                          {% endif %}
-                      <!--</div>-->
-                      <div id="collapse{{message.message_id}}" class="collapse" aria-labelledby="heading{{message.message_id}}" data-parent="#accordionExample">
-                          <div class="card-body">
-                              <div class="bang">
-                                  <small id="emailHelp" class="form-text text-muted">Date: <u>{{message.date|date:'Y-M-d H:i:s'}} UTC</u>&nbsp;<a class="message_more" role="button" tabindex="0" href="/message_more_info/{{message.message_id}}">More</a></small>
-                              </div>
-                              <br>
-                              <div>
-                                  {{message.payload|safe}}
-                              </div>
-                          </div>
-                      </div>
+                    <!--<div class="card-header shadow p-3 mb-2 bg-white rounded" id="heading{{message.message_id}}">-->
+                    {% if message.visual %}
+                        <h5>
+                        <input style="color: #686868;" id="{{message.message_id}}" value="{{message.from_user}} - {{message.subject}}" type="submit" 
+                        class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded font-weight"
+                        data-toggle="collapse" data-target="#collapse{{message.message_id}}" aria-expanded="true" aria-controls="collapse{{message.message_id}}"
+                        data-placement="right" title="{{message.subject}}" onclick="show_message(this.id);">
+                        </h5>
+                    {% else %}
+                        <h5>
+                        <input style="color: #000000;" id="{{message.message_id}}" value="{{message.from_user}} - {{message.subject}}" type="submit" 
+                        class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded font-weight-bold"
+                        data-toggle="collapse" data-target="#collapse{{message.message_id}}" aria-expanded="true" aria-controls="collapse{{message.message_id}}"
+                        data-placement="right" title="{{message.subject}}" onclick="show_message(this.id);">
+                        </h5>
+                    {% endif %}
+                    <!--</div>-->
+                    <div id="collapse{{message.message_id}}" class="collapse" aria-labelledby="heading{{message.message_id}}" data-parent="#accordionExample">
+                        <div class="card-body">
+                            <div class="bang">
+                                <small id="emailHelp" class="form-text text-muted">Date: <u>{{message.date|date:'Y-M-d H:i:s'}} UTC</u>&nbsp;<a class="message_more" role="button" tabindex="0" href="/message_more_info/{{message.message_id}}">More</a></small>
+                            </div>
+                            <br>
+                            <div>
+                                {{message.payload|safe}}
+                            </div>
+                        </div>
+                    </div>
                   </div>
               {% endfor %}
             </div>
