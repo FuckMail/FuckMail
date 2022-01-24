@@ -17,6 +17,7 @@ urlpatterns = [
     path("add_few_accounts/", add_few_accounts, name="add_few_accounts"),
     path("del_all_accounts/", del_all_accounts, name="del_all_accounts"),
     path("del_mail_from_list/", del_mail_from_list, name="del_mail_from_list"),
+    path("get_new_messages/", get_new_messages, name="get_new_messages"),
 
     path("help/<str:fileName>", help, name="help"),
     path("download_help_file/", download_help_file, name="download_help_file")
