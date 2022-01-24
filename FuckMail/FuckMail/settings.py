@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 import yaml
-from os import path, environ
+from os import path
 from pathlib import Path
 
 from loguru import logger
@@ -90,7 +90,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'FuckMail.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
