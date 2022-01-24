@@ -1,3 +1,5 @@
+setInterval(getNewMessages, 5000);
+
 $('#basic-addon1').keypress(function (event) {
     var keycode = (event.keyCode ? event.keyCode : event.which);
     if (keycode == '13') { }
@@ -27,12 +29,17 @@ function redirect_to_main_page() {
     window.location.replace("profile");
 };
 
+// All modals
 function add_account_modal(){
-    $('#myModal').modal('show');
+    $("#myModal").modal("show");
 }
 
 function add_few_accounts_modal(){
-    $('#addFewAccounts').modal('show');
+    $("#addFewAccounts").modal("show");
+}
+
+function deleteAllAccounts_modal(){
+    $("#deleteAllAccounts").modal("show")
 }
 
 function show_message(message_id) {
@@ -83,12 +90,20 @@ function del_is_not_found_mail(mail_address) {
             "X-Requested-With": "XMLHttpRequest",
             "X-CSRFToken": getCookie("csrftoken")
         },
+    }).then(function(response){
+        response.json().then(
+            function(data){
+                if (data == true){
+                    redirect_to_main_page();
+                }
+            }
+        );
     });
-    redirect_to_main_page();
 }
 
 function get_file() {
-    var file = document.getElementById("file-browser").files[0];
+    var file = document.getElementById("file").files[0];
+    console.log(file);
     if (file) {
         var fileNameArray = file.name.split(".");
         if (fileNameArray[fileNameArray.length - 1] != "txt") {
@@ -113,13 +128,13 @@ function get_file() {
                         "X-CSRFToken": getCookie("csrftoken")
                     }
                 }).then(function(response){
-                    console.log(response.json().then(
+                    response.json().then(
                         function(data){
                             if (data == true){
                                 redirect_to_main_page();
                             }
                         }
-                    ));
+                    );
                 });
             }
         }
@@ -137,12 +152,88 @@ function del_all_accounts(){
             "X-Requested-With": "XMLHttpRequest",
             "X-CSRFToken": getCookie("csrftoken")
         },
+    }).then(function(response){
+        response.json().then(
+            function(data){
+                if (data==true){
+                    redirect_to_main_page();
+                }
+            }
+        )
     });
-    redirect_to_main_page();
 }
 
 function help_addFileFormat(){
     window.location.href = "help/add_file_format.html";
+}
+
+function getNewMessages(){
+    var mail_address = document.getElementById("mail_address");
+    if (mail_address != null){
+        var data = new FormData();
+        data.append("mail_address", mail_address.textContent);
+        fetch("get_new_messages/", {
+            method: "POST",
+            body: data,
+            contentType: 'application/json',
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": getCookie("csrftoken")
+            },
+        }).then(function(response){
+            response.json().then(
+                function(data){
+                    if (data["messages"] != ""){
+                        var accordion = document.querySelector("#accordionExample");
+                        var card = document.createElement('div');
+                        card.className = "card";
+                        var newMessageElement_H5 = document.createElement('h5');
+                        var newMessageElement_INPUT = document.createElement('input');
+                        newMessageElement_INPUT.id = data["messages"]["message_id"];
+                        newMessageElement_INPUT.type = "submit";
+                        newMessageElement_INPUT.className = "list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded font-weight-bold";
+                        newMessageElement_INPUT.value = `${data["messages"]["from_user"]} - ${data["messages"]["subject"]}`;
+                        newMessageElement_INPUT.title = data["messages"]["subject"];
+                        newMessageElement_INPUT.style = "color: #000000;";
+                        newMessageElement_INPUT.innerHTML = "This is message";
+                        newMessageElement_INPUT.setAttribute("data-target", `#collapse${data["messages"]["message_id"]}`);
+                        newMessageElement_INPUT.setAttribute("data-toggle", "collapse");
+                        newMessageElement_INPUT.setAttribute("onclick", "show_message(this.id);");
+                        newMessageElement_INPUT.setAttribute("aria-expanded", "true");
+                        newMessageElement_INPUT.setAttribute("data-placement", "right");
+                        newMessageElement_INPUT.setAttribute("aria-controls", `collapse${data["messages"]["message_id"]}`);
+
+                        var newMsgElement_1 = document.createElement("div");
+                        newMsgElement_1.id = `collapse${data["messages"]["message_id"]}`
+                        newMsgElement_1.className = "collapse";
+                        newMsgElement_1.setAttribute("aria-labelledby", `heading${data["messages"]["message_id"]}`);
+                        newMsgElement_1.setAttribute("data-parent", "#accordionExample");
+
+                        var card_body = document.createElement("div");
+                        card_body.className = "card-body";
+
+                        var bang = document.createElement("div");
+                        bang.className = "bang";
+                        bang.innerHTML = `<small id="emailHelp" class="form-text text-muted">Date: <u>${data["messages"]["date"]} UTC</u></small>&nbsp;<br>`;
+
+                        var payload_div = document.createElement("div");
+                        payload_div.innerHTML = `${data["messages"]["payload"]}`;
+
+                        newMessageElement_H5.append(newMessageElement_INPUT);
+                        card.append(newMessageElement_H5);
+                        card.append(newMsgElement_1);
+                        newMsgElement_1.append(card_body);
+                        card_body.append(bang);
+                        card_body.append(payload_div);
+                        accordion.prepend(card);
+
+                        var messages_count_number = document.getElementById("messages-count");
+                        messages_count_number.innerText = `📤Messages - ${ parseInt(messages_count_number.innerText.split("-")[1]) + 1 }`;
+                    }
+                }
+            );
+        });
+    }
 }
 
 function getCookie(name) {
