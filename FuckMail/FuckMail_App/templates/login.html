@@ -9,21 +9,21 @@
     <form method="post" action="" onsubmit="remove_message();">
         {% csrf_token %}
         <div class="form-group">
-            <input type="login" class="form-control" id="exampleInputLogin" name="username" placeholder="Введите ваш юзернейм">
+            <input type="login" class="form-control" id="exampleInputLogin" name="username" placeholder="Your username">
         </div>
         <div class="form-group">
-            <input type="password" class="form-control" id="exampleInputPassword" name="password" placeholder="Введите ваш пароль">
-            <small id="emailHelp" class="form-text text-muted">Не передавайте ваш юзернейм и пароль 3-ьим лицам.</small>
+            <input type="password" class="form-control" id="exampleInputPassword" name="password" placeholder="Your password">
+            <small id="emailHelp" class="form-text text-muted">Do not share your username and password third parties</small>
         </div>
         {% if message %}
             <div id="message" class="alert alert-warning" role="alert">{{message}}</div>
         {% endif %}
         <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
             <div class="btn-group mr-2" role="group" aria-label="First group">
-                <button type="submit" class="btn btn-primary" name="login-button"">Войти</button>
+                <button type="submit" class="btn btn-primary" name="login-button"">Login</button>
             </div>
             <div class="btn-group mr-2" role="group" aria-label="Second group">
-                <button type="submit" class="btn btn-outline-primary" name="register-button">Зарегистрироваться</button>
+                <button type="submit" class="btn btn-outline-primary" name="register-button">Sign Up</button>
             </div>
         </div>
         <br>
