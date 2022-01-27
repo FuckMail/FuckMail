@@ -19,27 +19,43 @@ from .models import *
 from .serializers import *
 from .mails.utils import MailsCore
 
+class AuthUserView(ListAPIView):
+    serializer_class = User
+    def get(self, request, username, password):
+        queryset: QuerySet = User.objects.filter(username=username, password=password)
+        return HttpResponse(dumps({"response": queryset.exists()}), content_type='application/json')
 
-class HttpJavascriptResponse(HttpResponse):
-    def __init__(self,content):
-       HttpResponse.__init__(self,content,mimetype="text/javascript")
+class AddressesView(ListAPIView):
+    serializer_class = Mails
+    def get(self, request, username):
+        addresses = list()
+        try:
+            user_id: QuerySet = User.objects.get(username=username)
+            queryset: QuerySet = Mails.objects.filter(user_id=user_id.pk).order_by("address").all()
+            addresses = [address.address for address in queryset]
+        except Exception as e:
+            logger.error(e)
+        return HttpResponse(dumps({"addresses": addresses}), content_type='application/json')
 
+class AddressDataView(ListAPIView):
+    serializer_class = Mails
+    def get(self, request, username, address):
+        data = dict()
+        try:
+            user_id: QuerySet = User.objects.get(username=username)
+            queryset: QuerySet = Mails.objects.get(user_id=user_id.pk, address=address)
+            data = dict(
+                address=queryset.address, password=queryset.password,
+                proxy_url=queryset.proxy_url
+            )
+        except Exception as e:
+            logger.error(e)
+        return HttpResponse(dumps(dict(data=data)), content_type='application/json')
 
-class EmailsView(ListAPIView):
-    serializer_class = EmailsSerializer
-    def get(self, request):
-        queryset: QuerySet = Mails.objects.all()
-        serializer = EmailsSerializer(queryset, many=True)
-        return HttpResponse(dumps({"data": serializer.data}), content_type='application/json')
-
-
-class CacheMessagesView(ListAPIView):
+class MessagesView(ListAPIView):
     serializer_class = CacheMessages
-    def get(self, request, mail_address):
-        queryset: QuerySet = CacheMessages.objects.filter(address=mail_address).all()
-        serializer = CacheMessagesSerializer(queryset, many=True)
-        return HttpResponse(dumps({"cachemessages": serializer.data}), content_type='application/json')
-
+    def get(self, request, username, address):
+        pass
 
 def index(request):
     if request.user.is_authenticated:
