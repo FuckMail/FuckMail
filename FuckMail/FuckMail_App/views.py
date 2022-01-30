@@ -21,8 +21,16 @@ from .mails.utils import MailsCore
 
 class AuthUserView(ListAPIView):
     serializer_class = User
-    def get(self, request, username, password):
+    def get(self, request, username, password, sessionid):
         queryset: QuerySet = User.objects.filter(username=username, password=password)
+        if queryset.exists():
+            init_queryset = queryset.get()
+            session_queryset: QuerySet = DesktopSessions.objects.filter(user_id=init_queryset.pk)
+            if not session_queryset.exists():
+                DesktopSessions.objects.create(user_id=init_queryset.pk, sessionid=sessionid)
+            else:
+                desktop_session = DesktopSessions.objects.filter(user_id=init_queryset.pk).update(sessionid=sessionid)
+
         return HttpResponse(dumps({"response": queryset.exists()}), content_type='application/json')
 
 class AddressesView(ListAPIView):
@@ -52,9 +60,9 @@ class AddressDataView(ListAPIView):
             logger.error(e)
         return HttpResponse(dumps(dict(data=data)), content_type='application/json')
 
-class MessagesView(ListAPIView):
+class ShowMessageView(ListAPIView):
     serializer_class = CacheMessages
-    def get(self, request, username, address):
+    def get(self, message_id):
         pass
 
 def index(request):
@@ -233,6 +241,15 @@ def message_more_info(request, payload):
         return render(request, "message_more_info.html", data)
     else:
         return redirect("index")
+
+def render_desktop_page(request, message_id):
+    username, message_id = message_id.split("user")
+    message_id, address = message_id.split("address")
+    user_id = User.objects.get(username=username)
+    mail = MailsCore(user_id=user_id.pk, mail_address=address)
+    message = mail.get_message_by_id(message_id)
+    data = dict(message=message)
+    return render(request, "message_more_info.html", data)
 
 def read_message(request):
     if request.user.is_authenticated:
