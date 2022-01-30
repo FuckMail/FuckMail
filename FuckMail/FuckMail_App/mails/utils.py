@@ -19,16 +19,17 @@ IMAP_SERVERS = {
 }
 
 class MailsCore:
-    def __init__(self, user_id: int, mail_address: str):
+    def __init__(self, user_id: int = 0, mail_address: str = ""):
         """Initialzation
         Call functions: get_mail_data; get_proxy_url
         :param: mail_address
         :type: str
         """
-        self.user_id = user_id
-        self.mail_address = mail_address
-        self.mail_data = self.get_mail_data(user_id=user_id, mail_address=self.mail_address)
-        self.proxy_address = self.get_proxy_url(user_id=user_id, mail_address=self.mail_address)
+        if bool(user_id) and mail_address:
+            self.user_id = user_id
+            self.mail_address = mail_address
+            self.mail_data = self.get_mail_data(user_id=user_id, mail_address=self.mail_address)
+            self.proxy_address = self.get_proxy_url(user_id=user_id, mail_address=self.mail_address)
 
     def all(self):
         """This is function get all messages
@@ -166,6 +167,32 @@ class MailsCore:
                             _messages["date"] = self.date_format(message["date"])
                             _messages["payload"] = decode_message_payload
         return _messages
+    
+    def get_message_by_id(self, messageId):
+        host = self.get_host(mail_address=self.mail_address)
+        mail = imaplib.IMAP4_SSL(host)
+        mail.login(self.mail_data[0], self.mail_data[1])
+        mail.select("INBOX")
+        typ, data = mail.search(None, '(HEADER Message-ID "%s")' % messageId)
+        if typ == "OK" and bool(data[0].decode("utf-8")):
+            mail_ids = data[0].split()
+            for i in mail_ids:
+                data = mail.fetch(i.decode("utf-8"), "(RFC822)")
+                for response_part in data:
+                    arr = response_part[0]
+                    if isinstance(arr, tuple):
+                        message = email.message_from_string(str(arr[1], "utf-8"))
+                        if host == "imap.outlook.com":
+                            try:
+                                decode_message_payload = message.get_payload(decode=True).decode("utf-8")
+                            except:
+                                try:
+                                    decode_message_payload = message.get_payload(1).get_payload(decode=True).decode("utf-8")
+                                except:
+                                    decode_message_payload = None
+                        else:
+                            decode_message_payload = message.get_payload().get_payload(decode=True).decode("utf-8")
+        return decode_message_payload
 
     def get_mail_data(self, user_id: int, mail_address: str):
         """This is function get mail data (address and password)
