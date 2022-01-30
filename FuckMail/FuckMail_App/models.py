@@ -1,7 +1,3 @@
-import asyncio
-from asyncio import sleep
-from datetime import datetime
-
 from django.db import models
 
 class Mails(models.Model):
@@ -35,3 +31,14 @@ class CacheMessages(models.Model):
     class Meta:
         verbose_name = "CacheMessage"
         verbose_name_plural = "CacheMessages"
+
+class DesktopSessions(models.Model):
+    user_id = models.IntegerField()
+    sessionid = models.CharField(max_length=255)
+
+    def __str__(self):
+        return "<DesktopSession %s>" % self.sessionid
+    
+    class Meta:
+        verbose_name = "DesktopSession"
+        verbose_name_plural = "DesktopSessions"
