@@ -8,9 +8,10 @@ urlpatterns = [
     path("logout", logout_user, name="logout"),
     path("add_account", add_account, name="add_account"),
 
-    path("api/auth/<str:username>/<str:password>", AuthUserView.as_view(), name="auth_user"),
+    path("api/auth/<str:username>/<str:password>/<str:sessionid>", AuthUserView.as_view(), name="auth_user"),
     path("api/addresses/<str:username>", AddressesView.as_view(), name="addresses"),
     path("api/address_data/<str:username>/<str:address>", AddressDataView.as_view(), name="address_data"),
+    path("api/show_message/<str:message_id>", render_desktop_page, name="render_desktop_page"),
 
     path("read_message/", read_message, name="add_account"),
     path("del_mail/", del_mail, name="del_mail"),
