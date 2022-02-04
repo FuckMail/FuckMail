@@ -13,56 +13,53 @@
         </button>
       </div>
       <form method="post" action="add_account">
-          <div class="input-group mb-3">
-              <div class="input-group-prepend"><span class="input-group-text">📧</span></div>
-              <input type="text" class="form-control" name="mail-address" placeholder="Mail address">
-          </div>
-          <div class="input-group mb-3">
-              <div class="input-group-prepend"><span class="input-group-text">🔐</span></div>
-              <input type="text" class="form-control" name="mail-password" placeholder="Mail password">
-          </div>
-          <div class="input-group mb-3">
-              <div class="input-group-prepend"><span class="input-group-text">👮🏻‍♂️</span></div>
-              <input type="text" class="form-control" name="proxy-url" placeholder="Proxy url (ip:port:username:password)">
-          </div>
-          <div class="modal-footer">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-primary" name="save_account">Save</button>
-          </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend"><span class="input-group-text">📧</span></div>
+          <input type="text" class="form-control" name="mail-address" placeholder="Mail address">
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend"><span class="input-group-text">🔐</span></div>
+          <input type="text" class="form-control" name="mail-password" placeholder="Mail password">
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend"><span class="input-group-text">👮🏻‍♂️</span></div>
+          <input type="text" class="form-control" name="proxy-url" placeholder="Proxy url (ip:port:username:password)">
+        </div>
+        <div class="modal-footer">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary" name="save_account">Save</button>
+        </div>
       </form>
-      </div>
     </div>
+  </div>
 </div>
 
 <!-- Add few accounts (modal) -->
 <div id="addFewAccounts" class="modal" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
-      <div class="modal-content">
-          <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-              </button>
-          </div>
-          <!--<form id="load-few-accounts" method="post" action="add_few_accounts" enctype="multipart/form-data">-->
-              <div class="wrapper">
-                  <h1>Load accounts</h1>
-                  <div class="upload-container">
-                  <div class="border-container">
-                      <div class="icons fa-4x">
-                      <i class="fas fa-file-image" data-fa-transform="shrink-3 down-2 left-6 rotate--45"></i>
-                      <i class="fas fa-file-alt" data-fa-transform="shrink-2 up-4"></i>
-                      <i class="fas fa-file-pdf" data-fa-transform="shrink-3 down-2 right-6 rotate-45"></i>
-                      </div>
-                      <!--<p>Upload file <input id="file-upload" type="file" class="custom-file-upload"> in .txt format from your computer.<br>
-                          <small>File must not be larger than 50MB</small></p>-->
-                        <p><label class="custom-file-upload"><input id="file" type="file"/>Choose file</label>
-                          <br>
-                          Upload file in .txt format from your computer.
-                          <br>
-                          <small>File must not be larger than 50MB</small>
-                        </p>
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+          <div class="wrapper">
+            <h1>Load accounts</h1>
+            <div class="upload-container">
+              <div class="border-container">
+                <div class="icons fa-4x">
+                  <i class="fas fa-file-image" data-fa-transform="shrink-3 down-2 left-6 rotate--45"></i>
+                  <i class="fas fa-file-alt" data-fa-transform="shrink-2 up-4"></i>
+                  <i class="fas fa-file-pdf" data-fa-transform="shrink-3 down-2 right-6 rotate-45"></i>
                   </div>
-                  </div>
+                    <p><label class="custom-file-upload"><input id="file" type="file"/>Choose file</label>
+                      <br>
+                      Upload file in .txt format from your computer.
+                      <br>
+                      <small>File must not be larger than 50MB</small>
+                    </p>
+                    </div>
+                    </div>
                   <br>
               </div>
               <div class="modal-footer">
@@ -72,8 +69,11 @@
                   <button id="liveToastBtn" type="button" class="btn btn-primary" name="save_accounts" onclick="get_file();">Save</button>
                 </div>
               </div>
-          <!--</form>-->
+            </div>
+          </div>
+        </div>
       </div>
+    </div>
   </div>
 </div>
 
@@ -99,141 +99,137 @@
 
 {% if is_new_account.status %}
   {% if is_new_account.type == 'Success' %}
-  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
       {{is_new_account.message|safe}}
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
+        <span aria-hidden="true">&times;</span>
       </button>
-      </div>
+    </div>
   {% elif is_new_account.type == 'Error' %}
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-      {{is_new_account.message}}
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-          </button>
-      </div>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{is_new_account.message}}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
   {% endif %}
 {% endif %}
 
-<nav class="navbar navbar-light bg-light">
+<nav class="navbar navbar-dark bg-dark">
   <div class="container-fluid">
     {% if messages %}
-      <h3>FuckMail - <span id="mail_address" class="badge badge-dark">{{address}}</span><i class='fa fa-copy'></i></h3>
+      <h3>FuckMail <span id="mail_address" class="badge badge-light">{{address}}</span><i class='fa fa-copy'></i></h3>
     {% else %}
       <h3>FuckMail</h3>
     {% endif %}
   </div>
 </nav>
 <div class="container-xl">
-    <!--<legend>FuckMail</legend>-->
-    <div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3">
-      <div class="col-2">
-        <div class="p-3">
-            <h5>👤Account</h5>
-            <div class="dropdown">
-              <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {{username}}
-              </button>
-              <div class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
-                  <!--<div class="col-xs-12 col-sm-4">-->
-                  <button type="button" class="btn btn-danger w-100" onclick="location.href='logout'">LogOut</button>
-                  <!--</div>-->
-              </div>
+  <!--<legend>FuckMail</legend>-->
+  <div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3">
+    <div class="col-2">
+      <div class="p-3">
+        <h5>👤Account</h5>
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {{username}}
+          </button>
+          <div class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
+              <button type="button" class="btn btn-danger w-100" onclick="location.href='logout'">LogOut</button>
           </div>
-          <button type="button" class="btn btn-dark w-100" onclick="add_account_modal();">Add account</button>
-          <button type="button" class="btn btn-dark w-100" onclick="add_few_accounts_modal();">Add few accounts</button>
-          <button type="button" class="btn btn-dark w-100" onclick="deleteAllAccounts_modal();">Delete all accounts</button>
         </div>
+        <button type="button" class="btn btn-dark w-100" onclick="add_account_modal();">Add account</button>
+        <button type="button" class="btn btn-dark w-100" onclick="add_few_accounts_modal();">Add few accounts</button>
+        <button type="button" class="btn btn-dark w-100" onclick="deleteAllAccounts_modal();">Delete all accounts</button>
       </div>
-      <div class="col-3">
-        <div class="p-3">
-            <h5 id="title-mails-count">📨Mails - {{mails_length}}</h5>
-            {% if emails %}
-              <form method="post">
-                {% csrf_token %}
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                    <span class="input-group-text">🔍</span>
-                    </div>
-                    <input type="text" id="basic-addon1" name="search_mail" class="form-control" placeholder="Mail Address" aria-label="Username" aria-describedby="basic-addon1">
-                </div>
-              </form>
-              <div id="mails-scrollbar" class="list-group pre-scrollable">
-                <form method="post" action="/profile">
-                    {% csrf_token %}
-                    {% if first_mail %}
-                        <input style="color: black;" id="mail-{{first_mail}}" name="have_mail" value="{{first_mail}}" type="submit"
-                        class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded" title="{{first_mail}}">
-                    {% endif %}
-                    {% for email in emails %}
-                        <input id="mail-{{email}}" name="have_mail" value="{{email}}" type="submit" 
-                        class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded" title="{{email}}">
-                    {% endfor %}
-                </form>
-              </div>s
-            {% else %}
-              {% if first_mail %}
-              <form method="post" action="/profile">
-                  {% csrf_token %}
-                  <div class="input-group mb-3">
-                      <div class="input-group-prepend">
-                      <span class="input-group-text">🔍</span>
-                      </div>
-                      <input type="text" id="basic-addon1" name="search_mail" class="form-control" placeholder="Mail Address" aria-label="Username" aria-describedby="basic-addon1">
-                  </div>
-              </form>
-              <div id="mails-scrollbar" class="list-group pre-scrollable">
-                  <form method="post" action="/profile">
-                        {% csrf_token %}
-                        <input style="color: black;" id="mail-{{first_mail}}" name="have_mail" value="{{first_mail}}" type="submit"
-                        class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded" title="{{first_mail}}">
-                  </form>
+    </div>
+    <div class="col-3">
+      <div class="p-3">
+        <h5 id="title-mails-count">📨Mails - {{mails_length}}</h5>
+        {% if emails %}
+          <form method="post">
+            {% csrf_token %}
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">🔍</span>
               </div>
+              <input type="text" id="basic-addon1" name="search_mail" class="form-control" placeholder="Mail Address" aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+          </form>
+          <div id="mails-scrollbar" class="list-group pre-scrollable">
+            <form method="post" action="/profile">
+              {% csrf_token %}
+              {% if first_mail %}
+                <input style="color: black;" id="mail-{{first_mail}}" name="have_mail" value="{{first_mail}}" type="submit"
+                class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded" title="{{first_mail}}">
               {% endif %}
-            {% endif %}
-        </div>
+              {% for email in emails %}
+                <input id="mail-{{email}}" name="have_mail" value="{{email}}" type="submit" 
+                class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded" title="{{email}}">
+              {% endfor %}
+            </form>
+          </div>s
+        {% else %}
+          {% if first_mail %}
+          <form method="post" action="/profile">
+            {% csrf_token %}
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">🔍</span>
+              </div>
+              <input type="text" id="basic-addon1" name="search_mail" class="form-control" placeholder="Mail Address" aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+          </form>
+          <div id="mails-scrollbar" class="list-group pre-scrollable">
+            <form method="post" action="/profile">
+              {% csrf_token %}
+              <input style="color: black;" id="mail-{{first_mail}}" name="have_mail" value="{{first_mail}}" type="submit"
+              class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded" title="{{first_mail}}">
+            </form>
+          </div>
+          {% endif %}
+        {% endif %}
       </div>
-      <div class="col-7">
-          <div class="p-3">
-            <h5 id="messages-count">📤Messages - {{messages|length}}</h5>
-            {% if messages %}
-            <div class="accordion pre-scrollable h-100" id="accordionExample">
-              {% for message in messages %}
-                  <div class="card">
-                    <!--<div class="card-header shadow p-3 mb-2 bg-white rounded" id="heading{{message.message_id}}">-->
-                    {% if message.visual %}
-                        <h5>
-                        <input style="color: #686868;" id="{{message.message_id}}" value="{{message.from_user}} - {{message.subject}}" type="submit" 
-                        class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded font-weight"
-                        data-toggle="collapse" data-target="#collapse{{message.message_id}}" aria-expanded="true" aria-controls="collapse{{message.message_id}}"
-                        data-placement="right" title="{{message.subject}}" onclick="show_message(this.id);">
-                        </h5>
-                    {% else %}
-                        <h5>
-                        <input style="color: #000000;" id="{{message.message_id}}" value="{{message.from_user}} - {{message.subject}}" type="submit" 
-                        class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded font-weight-bold"
-                        data-toggle="collapse" data-target="#collapse{{message.message_id}}" aria-expanded="true" aria-controls="collapse{{message.message_id}}"
-                        data-placement="right" title="{{message.subject}}" onclick="show_message(this.id);">
-                        </h5>
-                    {% endif %}
-                    <!--</div>-->
-                    <div id="collapse{{message.message_id}}" class="collapse" aria-labelledby="heading{{message.message_id}}" data-parent="#accordionExample">
-                        <div class="card-body">
-                            <div class="bang">
-                                <small id="emailHelp" class="form-text text-muted">Date: <u>{{message.date|date:'Y-M-d H:i:s'}} UTC</u>&nbsp;<a class="message_more" role="button" tabindex="0" href="/message_more_info/{{message.message_id}}">More</a></small>
-                            </div>
-                            <br>
-                            <div>
-                                {{message.payload|safe}}
-                            </div>
-                        </div>
+    </div>
+    <div class="col-7">
+      <div class="p-3">
+        <h5 id="messages-count">📤Messages - {{messages|length}}</h5>
+        {% if messages %}
+          <div class="accordion pre-scrollable h-100" id="accordionExample">
+            {% for message in messages %}
+              <div class="card">
+                {% if message.visual %}
+                  <h5>
+                  <input style="color: #686868;" id="{{message.message_id}}" value="{{message.from_user}} - {{message.subject}}" type="submit" 
+                  class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded font-weight"
+                  data-toggle="collapse" data-target="#collapse{{message.message_id}}" aria-expanded="true" aria-controls="collapse{{message.message_id}}"
+                  data-placement="right" title="{{message.subject}}" onclick="read_message(this.id);">
+                  </h5>
+                {% else %}
+                  <h5>
+                  <input style="color: #000000;" id="{{message.message_id}}" value="{{message.from_user}} - {{message.subject}}" type="submit" 
+                  class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded font-weight-bold"
+                  data-toggle="collapse" data-target="#collapse{{message.message_id}}" aria-expanded="true" aria-controls="collapse{{message.message_id}}"
+                  data-placement="right" title="{{message.subject}}" onclick="read_message(this.id);">
+                  </h5>
+                {% endif %}
+                <div id="collapse{{message.message_id}}" class="collapse" aria-labelledby="heading{{message.message_id}}" data-parent="#accordionExample">
+                  <div class="card-body">
+                    <div class="bang">
+                      <small id="emailHelp" class="form-text text-muted">Date: <u>{{message.date|date:'Y-M-d H:i:s'}} UTC</u>&nbsp;<a class="message_more" role="button" tabindex="0" href="/message_more_info/{{message.message_id}}">More</a></small>
+                    </div>
+                    <br>
+                    <div>
+                      {{message.payload|safe}}
                     </div>
                   </div>
-              {% endfor %}
-            </div>
-            {% endif %}
-        </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
       </div>
     </div>
   </div>
+</div>
 {% endblock %}
