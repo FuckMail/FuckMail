@@ -4,7 +4,7 @@ body{
     overflow-y: hidden;
 }
 
-h5, legend{
+h5, h3, legend{
     color: white;
 }
 
