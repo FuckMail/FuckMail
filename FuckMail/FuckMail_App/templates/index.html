@@ -14,15 +14,15 @@
       </div>
       <form method="post" action="add_account">
         <div class="input-group mb-3">
-          <div class="input-group-prepend"><span class="input-group-text">📧</span></div>
+          <div class="input-group-prepend"><span class="input-group-text"><i class="bi bi-envelope-plus-fill"></i></span></div>
           <input type="text" class="form-control" name="mail-address" placeholder="Mail address">
         </div>
         <div class="input-group mb-3">
-          <div class="input-group-prepend"><span class="input-group-text">🔐</span></div>
+          <div class="input-group-prepend"><span class="input-group-text"><i class="bi bi-key"></i></span></div>
           <input type="text" class="form-control" name="mail-password" placeholder="Mail password">
         </div>
         <div class="input-group mb-3">
-          <div class="input-group-prepend"><span class="input-group-text">👮🏻‍♂️</span></div>
+          <div class="input-group-prepend"><span class="input-group-text"><i class="bi bi-file-lock"></i></span></div>
           <input type="text" class="form-control" name="proxy-url" placeholder="Proxy url (ip:port:username:password)">
         </div>
         <div class="modal-footer">
@@ -129,7 +129,7 @@
   <div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3">
     <div class="col-2">
       <div class="p-3">
-        <h5>👤Account</h5>
+        <h5><i class="bi bi-person-fill"></i> Account</h5>
         <div class="dropdown">
           <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           {{username}}
@@ -145,13 +145,13 @@
     </div>
     <div class="col-3">
       <div class="p-3">
-        <h5 id="title-mails-count">📨Mails - {{mails_length}}</h5>
+        <h5 id="title-mails-count"><i class="bi bi-mailbox"></i> Mails - {{mails_length}}</h5>
         {% if emails %}
           <form method="post">
             {% csrf_token %}
             <div class="input-group mb-3">
               <div class="input-group-prepend">
-                <span class="input-group-text">🔍</span>
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
               </div>
               <input type="text" id="basic-addon1" name="search_mail" class="form-control" placeholder="Mail Address" aria-label="Username" aria-describedby="basic-addon1">
             </div>
@@ -175,7 +175,7 @@
             {% csrf_token %}
             <div class="input-group mb-3">
               <div class="input-group-prepend">
-                <span class="input-group-text">🔍</span>
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
               </div>
               <input type="text" id="basic-addon1" name="search_mail" class="form-control" placeholder="Mail Address" aria-label="Username" aria-describedby="basic-addon1">
             </div>
@@ -193,7 +193,7 @@
     </div>
     <div class="col-7">
       <div class="p-3">
-        <h5 id="messages-count">📤Messages - {{messages|length}}</h5>
+        <h5 id="messages-count"><i class="bi bi-envelope"></i> Messages - {{messages|length}}</h5>
         {% if messages %}
           <div class="accordion pre-scrollable h-100" id="accordionExample">
             {% for message in messages %}
