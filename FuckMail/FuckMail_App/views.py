@@ -60,10 +60,19 @@ class AddressDataView(ListAPIView):
             logger.error(e)
         return HttpResponse(dumps(dict(data=data)), content_type='application/json')
 
-class ShowMessageView(ListAPIView):
-    serializer_class = CacheMessages
-    def get(self, message_id):
-        pass
+class AddAddressView(ListAPIView):
+    serializers = Mails
+    def get(self, request, username, sessionID, address, password, proxy_url):
+        is_session: QuerySet = DesktopSessions.objects.filter(sessionid=sessionID)
+        if is_session.exists():
+            is_address: QuerySet = Mails.objects.filter(address=address)
+            if not is_address.exists():
+                user_id: QuerySet = User.objects.get(username=username)
+                Mails.objects.create(
+                    user_id=user_id.pk, address=address,
+                    password=password, proxy_url=proxy_url)
+                return HttpResponse(dumps({"response": True}), content_type='application/json')
+        return HttpResponse(dumps({"response": False}), content_type='application/json')
 
 def index(request):
     if request.user.is_authenticated:
@@ -303,6 +312,11 @@ def download_help_file(request, filename="accounts.txt"):
     response = HttpResponse(path, content_type=mime_type)
     response["Content-Disposition"] = "attachment; filename=%s" % filename
     return response
+
+# Desktop
+
+def add_account_desktop(request):
+    return HttpResponse(dumps({"response": True}))
 
 def logout_user(request):
     logout(request)
