@@ -100,9 +100,16 @@ function del_mail(mail_address) {
             "X-Requested-With": "XMLHttpRequest",
             "X-CSRFToken": getCookie("csrftoken")
         },
+    }).then(function(response){
+        response.json().then(
+            function(data){
+                if (data==true){
+                    redirect_to_main_page(); // Redirect on the main page.
+                }
+            }
+        );
     });
-    redirect_to_main_page(); // Redirect on the main page.
-};
+}
 
 /**
  * This function delete is not found mail address:
