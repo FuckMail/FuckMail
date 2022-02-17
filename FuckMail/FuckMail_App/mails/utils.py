@@ -135,11 +135,13 @@ class MailsCore:
                                 decode_message_payload = message.get_payload().get_payload(decode=True).decode("utf-8")
 
                             message_id = md5(re.sub('[^0-9a-zA-Z]+', '', message["Message-Id"]).encode("utf-8")).hexdigest()
-                            CacheMessages.objects.create(
-                                message_id=message_id, address=mail_address,
-                                from_user=self.decode_format(message["from"]), subject=self.decode_format(message["subject"]),
-                                date=self.date_format(message["date"]), payload=decode_message_payload, user_id=user_id
-                            )
+                            is_mail = CacheMessages.objects.filter(user_id=self.user_id, address=self.mail_address, message_id=message_id)
+                            if not is_mail.exists():
+                                CacheMessages.objects.create(
+                                    message_id=message_id, address=mail_address,
+                                    from_user=self.decode_format(message["from"]), subject=self.decode_format(message["subject"]),
+                                    date=self.date_format(message["date"]), payload=decode_message_payload, user_id=user_id
+                                )
             _messages = CacheMessages.objects.filter(user_id=user_id, address=mail_address).order_by("date").all()
             return _messages
 
