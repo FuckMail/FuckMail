@@ -88,9 +88,6 @@ class API:
         return render(request, "message_more_info.html", data)
 
 class Web:
-    def __init__(self, request):
-        self.user_id = request.session["_auth_user_id"]
-
     def index(request):
         """The main function.
 
@@ -269,7 +266,6 @@ class Web:
         """
 
         if request.user.is_authenticated:
-            print(self.user_id)
             user_id = request.session["_auth_user_id"] # Get user id from request response.
             content = request.POST["content"] # Get content from request response.
             content_array = content.split("\n") # Seperation content.
@@ -364,7 +360,8 @@ class Web:
         if request.user.is_authenticated:
             user_id = request.session["_auth_user_id"] # Get user id from request session.
             mail_address = request.POST["mail_address"] # Get mail address from request response.
-            Mails.objects.filter(user_id=user_id, address=mail_address).delete() # Delete mail address.
+            Mails.objects.filter(user_id=user_id, address=mail_address).delete() # Delete mail object from db (Mails model).
+            CacheMessages.objects.filter(user_id=user_id, address=request.POST["mail_address"]).delete() # Delete messages from db (CacheMessages model).
             return HttpResponse(dumps(True), content_type="application/json")
         else:
             return redirect("index") # Redirect to 'index' page.
