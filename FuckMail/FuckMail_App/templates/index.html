@@ -146,7 +146,7 @@
     <div class="col-3">
       <div class="p-3">
         <h5 id="title-mails-count"><i class="bi bi-mailbox"></i> Mails - {{mails_length}}</h5>
-        {% if emails %}
+        {% if mails %}
           <form method="post">
             {% csrf_token %}
             <div class="input-group mb-3">
@@ -163,9 +163,9 @@
                 <input style="color: black;" id="mail-{{first_mail}}" name="have_mail" value="{{first_mail}}" type="submit"
                 class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded" title="{{first_mail}}">
               {% endif %}
-              {% for email in emails %}
-                <input id="mail-{{email}}" name="have_mail" value="{{email}}" type="submit" 
-                class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded" title="{{email}}">
+              {% for mail in mails %}
+                <input id="mail-{{mail}}" name="have_mail" value="{{mail}}" type="submit" 
+                class="list-group-item list-group-item-action shadow p-3 mb-2 bg-white rounded" title="{{mail}}">
               {% endfor %}
             </form>
           </div>s
