@@ -36,6 +36,7 @@ class MailsCore:
             self.mail_address: str = mail_address
             self.mail_data = self.get_mail_data(user_id=user_id, mail_address=self.mail_address) # Call for receive mail data.
             self.proxy_address = self.get_proxy_url(user_id=user_id, mail_address=self.mail_address) # Call for receive proxy address.
+
     @logger.catch
     def all(self):
         """This is function get all messages.
@@ -112,7 +113,7 @@ class MailsCore:
         else:
             last_mail_date = CacheMessages.objects.filter(user_id=user_id, address=mail_address).order_by("-date")[0]
             last_date = dt.strftime(last_mail_date.date, "%d-%b-%Y")
-            code, data = mail.search(None, '(SINCE "%s" UNSEEN)' % last_date)
+            code, data = mail.search(None, '(SINCE "%s")' % last_date)
             if code == "OK" and bool(data[0].decode("utf-8")):
                 mail_ids = data[0].split()
 
