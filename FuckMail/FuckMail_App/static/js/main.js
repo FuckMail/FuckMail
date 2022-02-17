@@ -280,7 +280,7 @@ function getNewMessages(){
 
                         // Set new count messages.
                         var messages_count_number = document.getElementById("messages-count");
-                        messages_count_number.innerText = `📤Messages - ${ parseInt(messages_count_number.innerText.split("-")[1]) + 1 }`;
+                        messages_count_number.innerText = `<i class="bi bi-envelope"></i> Messages - ${ parseInt(messages_count_number.innerText.split("-")[1]) + 1 }`;
                     }
                 }
             );
