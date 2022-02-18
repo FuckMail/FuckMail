@@ -167,6 +167,7 @@ class Web:
             user_id = request.session["_auth_user_id"] # Get user id.
             username: str = User.objects.get(pk=user_id).username # Get username from db by user id.
             mails: QuerySet = Mails.objects.filter(user_id=int(user_id)).all() # Get mails from db.
+            custom_user = CustomUser.objects.get(user_id=user_id)
             if request.POST:
                 data: dict = dict() # Init dict object.
                 if "have_mail" in request.POST: # Is have mail.
@@ -185,7 +186,8 @@ class Web:
                         data: dict = dict(message=mails_core["message"], address=address)
                         return render(request, "500.html", data)
                     elif mails_core["status"] == "success":
-                        messages: list = list(reversed(mails_core["messages"])) # Reversed messages from MailsCore object in the 'all' function.
+                        messages = mails_core["messages"]
+                        messages: list = list(reversed(messages)) # Reversed messages from MailsCore object in the 'all' function.
                 elif "search_mail" in request.POST: # Is search mail.
                     mail = Mails.objects.filter(user_id=user_id, address=request.POST["search_mail"]) # Get mail object from db.
                     if mail.exists():
@@ -199,11 +201,13 @@ class Web:
                 mails: list = [mail.address for mail in mails]
                 mails.remove(address)
                 data: dict = dict(mails=mails, messages=messages, address=address, username=username,
-                    is_new_account=is_new_account, first_mail=address, mails_length=len(mails)+1) # Convert data to dict object.
+                    is_new_account=is_new_account, first_mail=address, mails_length=len(mails)+1,
+                    is_cache=custom_user.is_cache) # Convert data to dict object.
                 return render(request, "index.html", data)
             else:
                 data: dict = dict(mails=mails, username=username,
-                    is_new_account=is_new_account, mails_length=len(mails)) # Convert data to dict object.
+                    is_new_account=is_new_account, mails_length=len(mails),
+                    is_cache=custom_user.is_cache) # Convert data to dict object.
                 return render(request, "index.html", data)
         else:
             return redirect("index") # Redirect to 'index' page.
@@ -252,7 +256,7 @@ class Web:
         else:
             return redirect("index") # Redirect to 'index' page.
 
-    def add_few_accounts(self, request):
+    def add_few_accounts(request):
         """The 'add few accounts' function.\n
         Read txt file and set data to HttpResponse at js.
 
@@ -298,7 +302,7 @@ class Web:
             Mails.objects.filter(user_id=user_id).delete() # Delete all accounts.
             return HttpResponse(dumps(True), content_type="application/json")
         else:
-            return redirect("index")
+            return redirect("index") # Redirect to 'index' page.
 
     def read_message(request):
         """The 'read message' function.\n
@@ -313,11 +317,10 @@ class Web:
         """
 
         if request.user.is_authenticated:
-            if request.is_ajax():
-                user_id = request.session["_auth_user_id"] # Get user id from request session.
-                mail_address: QuerySet = CacheMessages.objects.filter(user_id=user_id, message_id=request.POST["message_id"]).get() # Get mail address object.
-                mail_address.visual = True # Set value for mail address visual => True.
-                mail_address.save() # Save changes.
+            user_id = request.session["_auth_user_id"] # Get user id from request session.
+            mail_address: QuerySet = CacheMessages.objects.filter(user_id=user_id, message_id=request.POST["message_id"]).get() # Get mail address object.
+            mail_address.visual = True # Set value for mail address visual => True.
+            mail_address.save() # Save changes.
             return HttpResponse(dumps(True), content_type="application/json")
         else:
             return redirect("index") # Redirect to 'index' page.
@@ -442,6 +445,23 @@ class Web:
             user_id = request.session["_auth_user_id"]
             data: dict = dict(zip(["message"], [CacheMessages.objects.get(user_id=user_id, message_id=payload).payload]))
             return render(request, "message_more_info.html", data)
+        else:
+            return redirect("index") # Redirect to 'index' page.
+
+    def change_checkbox_value(request):
+        if request.user.is_authenticated:
+            user_id = request.session["_auth_user_id"]
+            custom_user = CustomUser.objects.filter(user_id=user_id)
+            if not custom_user.exists():
+                CustomUser.objects.create(user_id=user_id)
+            else:
+                is_cache = custom_user.get()
+                if not is_cache.is_cache:
+                    is_cache.is_cache = True
+                else:
+                    is_cache.is_cache = False
+                is_cache.save()
+            return HttpResponse(dumps(True), content_type="application/json")
         else:
             return redirect("index") # Redirect to 'index' page.
 
