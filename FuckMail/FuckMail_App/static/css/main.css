@@ -14,10 +14,16 @@ h5, h3, legend{
 
 .accordion{
     max-height:568px;
+    overflow: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
 }
 
 .list-group{
     max-height: 515px;
+    overflow: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
 }
 
 .alert-secondary{
@@ -207,4 +213,8 @@ input[type="file"] {
     display: inline-block;
     padding: 6px 12px;
     cursor: pointer;
+}
+
+.form-check-label{
+    color: white;
 }
