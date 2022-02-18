@@ -10,6 +10,7 @@ from dateutil import parser
 import socks
 import requests
 from loguru import logger
+from dataclasses import dataclass
 
 from ..models import *
 
@@ -37,7 +38,7 @@ class MailsCore:
             self.mail_data = self.get_mail_data(user_id=user_id, mail_address=self.mail_address) # Call for receive mail data.
             self.proxy_address = self.get_proxy_url(user_id=user_id, mail_address=self.mail_address) # Call for receive proxy address.
 
-    @logger.catch
+    #@logger.catch
     def all(self):
         """This is function get all messages.
 
@@ -75,7 +76,13 @@ class MailsCore:
             The messages. CacheMessages instance.
         """
 
-        mails = CacheMessages.objects.filter(user_id=user_id, address=mail_address) # Get all message from CacheMessages model.
+        custom_user = CustomUser.objects.filter(user_id=user_id).get()
+        if not custom_user.is_cache:
+            return self.is_not_cache_messages(user_id=user_id, mail_address=mail_address)
+        else:
+            return self.cache_messages(user_id=user_id, mail_address=mail_address)
+
+        """mails = CacheMessages.objects.filter(user_id=user_id, address=mail_address) # Get all message from CacheMessages model.
         host = self.get_host(mail_address=mail_address) # Get imap host.
         mail = imaplib.IMAP4_SSL(host) # Init IMAP4_SSL class.
         mail.login(self.mail_data[0], self.mail_data[1]) # Auth mail address.
@@ -143,7 +150,88 @@ class MailsCore:
                                     date=self.date_format(message["date"]), payload=decode_message_payload, user_id=user_id
                                 )
             _messages = CacheMessages.objects.filter(user_id=user_id, address=mail_address).order_by("date").all()
-            return _messages
+            return _messages"""
+
+    def cache_messages(self, user_id: int, mail_address: str):
+        cache_messages = CacheMessages.objects.filter(user_id=user_id, address=mail_address)
+        if not cache_messages.exists():
+            host = self.get_host(mail_address=mail_address) # Get imap host.
+            mail = imaplib.IMAP4_SSL(host) # Init IMAP4_SSL class.
+            mail.login(self.mail_data[0], self.mail_data[1]) # Auth mail address.
+            mail.select("INBOX")
+            code, data = mail.search(None, "ALL")
+            if code == "OK" and bool(data[0].decode("utf-8")):
+                mail_ids = data[0].split()
+                for i in mail_ids:
+                    data = mail.fetch(i.decode("utf-8"), "(RFC822)")
+                    for response in data:
+                        message_array = response[0]
+                        if isinstance(message_array, tuple):
+                            message = email.message_from_string(str(message_array[1], "utf-8"))
+                            if host == "imap.outlook.com":
+                                try:
+                                    decode_message_payload = message.get_payload(decode=True).decode("utf-8")
+                                except:
+                                    try:
+                                        decode_message_payload = message.get_payload(1).get_payload(decode=True).decode("utf-8")
+                                    except:
+                                        decode_message_payload = None
+                            else:
+                                decode_message_payload = message.get_payload().get_payload(decode=True).decode("utf-8")
+
+                            message_id = md5(re.sub('[^0-9a-zA-Z]+', '', message["Message-Id"]).encode("utf-8")).hexdigest()
+                            is_mail = CacheMessages.objects.filter(user_id=self.user_id, address=self.mail_address, message_id=message_id)
+                            if not is_mail.exists():
+                                CacheMessages.objects.create(
+                                    message_id=message_id, address=mail_address,
+                                    from_user=self.decode_format(message["from"]), subject=self.decode_format(message["subject"]),
+                                    date=self.date_format(message["date"]), payload=decode_message_payload, user_id=user_id
+                                )
+        _messages = CacheMessages.objects.filter(user_id=user_id, address=mail_address).order_by("date").all()
+        return _messages
+
+    def is_not_cache_messages(self, user_id: int, mail_address: str) -> dict:
+        _messages = list()
+        host = self.get_host(mail_address=mail_address) # Get imap host.
+        mail = imaplib.IMAP4_SSL(host) # Init IMAP4_SSL class.
+        mail.login(self.mail_data[0], self.mail_data[1]) # Auth mail address.
+        mail.select("INBOX")
+
+        code, data = mail.search(None, "ALL")
+        if code == "OK" and bool(data[0].decode("utf-8")):
+            mail_ids = data[0].split()
+            for i in mail_ids:
+                data = mail.fetch(i.decode("utf-8"), "(RFC822)")
+                for response in data:
+                    message_array = response[0]
+                    if isinstance(message_array, tuple):
+                        message = email.message_from_string(str(message_array[1], "utf-8"))
+                        if host == "imap.outlook.com":
+                            try:
+                                decode_message_payload = message.get_payload(decode=True).decode("utf-8")
+                            except:
+                                try:
+                                    decode_message_payload = message.get_payload(1).get_payload(decode=True).decode("utf-8")
+                                except:
+                                    decode_message_payload = None
+                        else:
+                            decode_message_payload = message.get_payload().get_payload(decode=True).decode("utf-8")
+
+                        message_id = md5(re.sub('[^0-9a-zA-Z]+', '', message["Message-Id"]).encode("utf-8")).hexdigest()
+
+                        @dataclass
+                        class IsNotCacheMessage:
+                            message_id: str
+                            from_user: str
+                            subject: str
+                            date: str
+                            payload: str
+
+                        isNotCacheMessage = IsNotCacheMessage(message_id=message_id, from_user=self.decode_format(message["from"]),
+                            subject=self.decode_format(message["subject"]), date=self.date_format(message["date"]),
+                            payload=decode_message_payload)
+                        _messages.append(isNotCacheMessage)
+        return _messages
 
     def get_new_messages(self):
         """This is function get new messages.\n
