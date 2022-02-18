@@ -3,14 +3,12 @@
 
 {% block body %}
 <!-- Add account (modal) -->
-<div id="myModal" class="modal" tabindex="-1" role="dialog">
+<div id="addAccount" class="modal" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">Add account</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="$('#addAccount').modal('hide');"></button>
       </div>
       <form method="post" action="add_account">
         <div class="input-group mb-3">
@@ -39,9 +37,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="$('#addFewAccounts').modal('hide');"></button>
         </div>
           <div class="wrapper">
             <h1>Load accounts</h1>
@@ -63,11 +59,9 @@
                   <br>
               </div>
               <div class="modal-footer">
-                <div class="d-grid gap-2">
-                  {% csrf_token %}
-                  <button class="btn btn-primary" type="button" onclick="help_addFileFormat();">Get help</button>
-                  <button id="liveToastBtn" type="button" class="btn btn-primary" name="save_accounts" onclick="get_file();">Save</button>
-                </div>
+                {% csrf_token %}
+                <button class="btn btn-primary" type="button" onclick="help_addFileFormat();">Get help</button>
+                <button id="liveToastBtn" type="button" class="btn btn-primary" name="save_accounts" onclick="get_file();">Save</button>
               </div>
             </div>
           </div>
@@ -83,9 +77,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">Delete all accounts</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="$('#deleteAllAccounts').modal('hide');"></button>
       </div>
       <div class="modal-body">
         <p>Are you sure you want to delete all accounts?</p>
@@ -99,18 +91,14 @@
 
 {% if is_new_account.status %}
   {% if is_new_account.type == 'Success' %}
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <div id="alert-success" class="alert alert-success alert-dismissible fade show" role="alert">
       {{is_new_account.message|safe}}
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="$('#alert-success').hide();"></button>
     </div>
   {% elif is_new_account.type == 'Error' %}
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-    {{is_new_account.message}}
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
+    <div id="alert-danger" class="alert alert-danger alert-dismissible fade show" role="alert">
+      {{is_new_account.message}}
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="$('#alert-danger').hide();"></button>
     </div>
   {% endif %}
 {% endif %}
@@ -118,7 +106,7 @@
 <nav class="navbar navbar-dark bg-dark">
   <div class="container-fluid">
     {% if messages %}
-      <h3>FuckMail <span id="mail_address" class="badge badge-light">{{address}}</span><i class='fa fa-copy'></i></h3>
+      <h3>FuckMail <span id="mail_address" class="badge bg-light text-dark">{{address}}</span><i class='fa fa-copy'></i></h3>
     {% else %}
       <h3>FuckMail</h3>
     {% endif %}
@@ -141,6 +129,17 @@
         <button type="button" class="btn btn-dark w-100" onclick="add_account_modal();">Add account</button>
         <button type="button" class="btn btn-dark w-100" onclick="add_few_accounts_modal();">Add few accounts</button>
         <button type="button" class="btn btn-dark w-100" onclick="deleteAllAccounts_modal();">Delete all accounts</button>
+        {% if is_cache %}
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked onclick="cache_messages_checkbox();">
+            <label class="form-check-label" for="flexSwitchCheckChecked">Cache messages</label>
+          </div>
+        {% else %}
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" onclick="cache_messages_checkbox();">
+            <label class="form-check-label" for="flexSwitchCheckDefault">Cache messages</label>
+          </div>
+        {% endif %}
       </div>
     </div>
     <div class="col-3">
@@ -156,7 +155,7 @@
               <input type="text" id="basic-addon1" name="search_mail" class="form-control" placeholder="Mail Address" aria-label="Username" aria-describedby="basic-addon1">
             </div>
           </form>
-          <div id="mails-scrollbar" class="list-group pre-scrollable">
+          <div id="mails-scrollbar" class="list-group">
             <form method="post" action="/profile">
               {% csrf_token %}
               {% if first_mail %}
@@ -180,7 +179,7 @@
               <input type="text" id="basic-addon1" name="search_mail" class="form-control" placeholder="Mail Address" aria-label="Username" aria-describedby="basic-addon1">
             </div>
           </form>
-          <div id="mails-scrollbar" class="list-group pre-scrollable">
+          <div id="mails-scrollbar" class="list-group">
             <form method="post" action="/profile">
               {% csrf_token %}
               <input style="color: black;" id="mail-{{first_mail}}" name="have_mail" value="{{first_mail}}" type="submit"
