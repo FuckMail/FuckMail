@@ -1,4 +1,13 @@
+from tkinter import CASCADE
 from django.db import models
+from django.contrib.auth.models import User
+
+class CustomUser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    is_cache = models.BooleanField(default=False)
+
+    def __str__(self):
+          return "%s's profile" % self.user
 
 class Mails(models.Model):
     user_id = models.IntegerField()
@@ -38,7 +47,7 @@ class DesktopSessions(models.Model):
 
     def __str__(self):
         return "<DesktopSession %s>" % self.sessionid
-    
+
     class Meta:
         verbose_name = "DesktopSession"
         verbose_name_plural = "DesktopSessions"
