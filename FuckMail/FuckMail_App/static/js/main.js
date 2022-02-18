@@ -1,4 +1,4 @@
-setInterval(getNewMessages, 5000);
+//setInterval(getNewMessages, 5000);
 
 $('#basic-addon1').keypress(function (event) {
     var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -7,6 +7,10 @@ $('#basic-addon1').keypress(function (event) {
 
 $(document).on("contextmenu", ".list-group-item", function(e){
     var mails_count = document.getElementById("title-mails-count"); // Get mails count from title-mails-count element.
+    var title_mail_address = document.getElementById("mail_address");
+    if (title_mail_address != null){
+        title_mail_address.remove();
+    }
     mails_count.innerText = `📨Mails - ${ mails_count.innerText.split("-")[1] - 1 }`; // Change mails count.
     var x = event.clientX, y = event.clientY,
     mail_address = document.elementFromPoint(x, y);
@@ -39,7 +43,7 @@ function redirect_to_main_page() {
  * User just may to add one mail account.
  */
 function add_account_modal(){
-    $("#myModal").modal("show");
+    $("#addAccount").modal("show");
 }
 
 /**
@@ -286,6 +290,25 @@ function getNewMessages(){
             );
         });
     }
+}
+
+function cache_messages_checkbox(){
+    fetch("change_checkbox_value/", {
+        method: "POST",
+        contentType: 'application/json',
+        headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRFToken": getCookie("csrftoken")
+        },
+    }).then(function(response){
+        response.json().then(
+            function(data){
+                if (data==true){
+                    //redirect_to_main_page(); // Redirect on the main page.
+                }
+            }
+        )
+    });
 }
 
 /**
