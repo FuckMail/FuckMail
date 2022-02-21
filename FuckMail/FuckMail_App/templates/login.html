@@ -5,19 +5,23 @@
 {% block body %}
 &nbsp;
 <div class="container py-5 container-fluid" style="background-color: white;" name="login-container">
-    <h2 class="mb-4"><span class="badge badge-secondary">LogIn</span></h2>
+    <h2 class="mb-4"><span class="badge bg-dark">LogIn</span></h2>
     <form method="post" action="" onsubmit="remove_message();">
         {% csrf_token %}
         <div class="form-group">
             <input type="login" class="form-control" id="exampleInputLogin" name="username" placeholder="Your username">
         </div>
+        <br>
         <div class="form-group">
             <input type="password" class="form-control" id="exampleInputPassword" name="password" placeholder="Your password">
+            <br>
             <small id="emailHelp" class="form-text text-muted">Do not share your username and password third parties</small>
         </div>
+        <br>
         {% if message %}
             <div id="message" class="alert alert-warning" role="alert">{{message}}</div>
         {% endif %}
+        <br>
         <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
             <div class="btn-group mr-2" role="group" aria-label="First group">
                 <button type="submit" class="btn btn-primary" name="login-button"">Login</button>
