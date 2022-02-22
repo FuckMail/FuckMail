@@ -167,7 +167,10 @@ class Web:
             user_id = request.session["_auth_user_id"] # Get user id.
             username: str = User.objects.get(pk=user_id).username # Get username from db by user id.
             mails: QuerySet = Mails.objects.filter(user_id=int(user_id)).all() # Get mails from db.
-            custom_user = CustomUser.objects.get(user_id=user_id)
+            custom_user = CustomUser.objects.filter(user_id=user_id) # Get CustomUser object with filter.
+            if not custom_user.exists():
+                CustomUser.objects.create(user_id=user_id) # Create new CustomUser object if user is does not exists.
+            custom_user = custom_user.get() # Set CustomUser object in custom_user variable.
             if request.POST:
                 data: dict = dict() # Init dict object.
                 if "have_mail" in request.POST: # Is have mail.
