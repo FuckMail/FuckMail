@@ -14,14 +14,11 @@
         <br>
         <div class="form-group">
             <input type="password" class="form-control" id="exampleInputPassword" name="password" placeholder="Your password">
-            <br>
-            <small id="emailHelp" class="form-text text-muted">Do not share your username and password third parties</small>
         </div>
         <br>
         {% if message %}
             <div id="message" class="alert alert-warning" role="alert">{{message}}</div>
         {% endif %}
-        <br>
         <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
             <div class="btn-group mr-2" role="group" aria-label="First group">
                 <button type="submit" class="btn btn-primary" name="login-button"">Login</button>
@@ -34,6 +31,8 @@
         <script src="https://www.google.com/recaptcha/api.js"></script>
         <div class="g-recaptcha" data-sitekey="{{GOOGLE_RECAPTCHA_PUBLIC_KEY}}"></div>
     </form>
+    <br>
+    <small id="emailHelp" class="form-text text-muted">Do not share your username and password third parties.</small>
     </div>
 </div>
 {% endblock %}
