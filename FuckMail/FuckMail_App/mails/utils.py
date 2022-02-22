@@ -188,10 +188,11 @@ class MailsCore:
                             subject: str
                             date: str
                             payload: str
+                            visual: bool
 
                         isNotCacheMessage = IsNotCacheMessage(message_id=message_id, from_user=self.decode_format(message["from"]),
                             subject=self.decode_format(message["subject"]), date=self.date_format(message["date"]),
-                            payload=decode_message_payload)
+                            payload=decode_message_payload, visual=False)
                         _messages.append(isNotCacheMessage)
         return _messages
 
