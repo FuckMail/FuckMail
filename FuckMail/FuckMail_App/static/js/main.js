@@ -1,4 +1,4 @@
-//setInterval(getNewMessages, 5000);
+setInterval(getNewMessages, 5000);
 
 $('#basic-addon1').keypress(function (event) {
     var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -284,7 +284,7 @@ function getNewMessages(){
 
                         // Set new count messages.
                         var messages_count_number = document.getElementById("messages-count");
-                        messages_count_number.innerText = `<i class="bi bi-envelope"></i> Messages - ${ parseInt(messages_count_number.innerText.split("-")[1]) + 1 }`;
+                        messages_count_number.innerHTML = `<i class="bi bi-envelope"></i> Messages - ${ parseInt(messages_count_number.innerText.split("-")[1]) + 1 }`;
                     }
                 }
             );
