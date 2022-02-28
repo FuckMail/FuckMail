@@ -107,6 +107,7 @@
   <div class="container-fluid">
     {% if messages %}
       <h3>FuckMail <span id="mail_address" class="badge bg-light text-dark">{{address}}</span><i class='fa fa-copy'></i></h3>
+      <span class="badge bg-warning text-dark"><i class="bi bi-info-circle"></i> Long loading may occur due to media in messages.</span>
     {% else %}
       <h3>FuckMail</h3>
     {% endif %}
