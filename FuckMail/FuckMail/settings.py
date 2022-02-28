@@ -11,16 +11,12 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 import yaml
-from os import path
 from pathlib import Path
 
 from loguru import logger
 
-if not path.exists(r"config.yaml"):
-    logger.warning("Don't exists file is 'config.yaml'")
-else:
-    with open(r"config.yaml") as f:
-        config = yaml.load(f, Loader=yaml.FullLoader)
+with open(r"config.yaml") as f:
+    config = yaml.load(f, Loader=yaml.FullLoader)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,13 +35,6 @@ ALLOWED_HOSTS = ["*"]
 GOOGLE_RECAPTCHA_PUBLIC_KEY = config["GOOGLE_RECAPTCHA_PUBLIC_KEY"]
 GOOGLE_RECAPTCHA_SECRET_KEY = config["GOOGLE_RECAPTCHA_SECRET_KEY"]
 
-# Celery Settings
-CELERY_TIMEZONE = "Europe/Moscow"
-CELERY_TASK_TRACK_STARTED = True
-CELERY_TASK_TIME_LIMIT = 30 * 60
-# CELERY_BROKER_URL = "redis://redis:6379/0"
-CELERY_BROKER_URL = "redis://localhost:6379/0"
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -56,8 +45,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'FuckMail_App',
-    'django_celery_beat',
-    'django_celery_results',
     'rest_framework'
 ]
 

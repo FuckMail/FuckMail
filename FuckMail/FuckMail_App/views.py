@@ -87,6 +87,7 @@ class API:
         data = dict(message=message)
         return render(request, "message_more_info.html", data)
 
+
 class Web:
     def index(request):
         """The main function.
