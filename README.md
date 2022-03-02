@@ -22,3 +22,10 @@ DB:
 python3 manage.py migrate
 python3 manage.py runserver
 ```
+
+## Images
+#### Main page
+![](images/fm_main_img.png)
+====
+#### Auth page
+![](images/fm_auth_img.png)
