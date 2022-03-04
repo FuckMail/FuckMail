@@ -49,16 +49,10 @@ class MailsCore:
             else return more messages from imap server.
         """
 
-        check_proxy = self.check_proxy(proxy_address=self.proxy_address)
-        if not check_proxy:
-            return {"status": "error", "message": "Is not correct proxy address!"}
-        else:
-            try:
-                proxy = loads(requests.post("https://api.myip.com").text)
-            except Exception as e:
-                return {"status": "error", "message": str(e)}
-            messages = self.check_last_messages(self.user_id, self.mail_address)
-            return {"status": "success", "proxy": proxy, "messages": messages}
+        #check_proxy = self.check_proxy(proxy_address=self.proxy_address)
+        proxy = loads(requests.post("https://api.myip.com").text)
+        messages = self.check_last_messages(self.user_id, self.mail_address)
+        return {"status": "success", "proxy": proxy, "messages": messages}
 
     def check_last_messages(self, user_id: int, mail_address: str):
         """This is function check last message.\n
