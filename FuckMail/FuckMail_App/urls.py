@@ -25,3 +25,6 @@ urlpatterns = [
     path("api/show_message/<str:message_id>", API.render_page, name="render_page"),
     path("api/add_address/<str:username>/<str:sessionID>/<str:address>/<str:password>/<str:proxy_url>", API.AddAddressView.as_view(), name="add_account_desktop"),
 ]
+
+#handler404 = "FuckMail_App.views.Web.handler404"
+handler500 = "FuckMail_App.views.handler500"
