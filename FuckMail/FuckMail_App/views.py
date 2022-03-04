@@ -1,6 +1,6 @@
 import mimetypes
 import os
-import traceback
+import sys
 from json import dumps, loads
 from hashlib import md5
 from datetime import datetime
@@ -176,6 +176,8 @@ class Web:
                 data: dict = dict() # Init dict object.
                 if "have_mail" in request.POST: # Is have mail.
                     address: str = request.POST["have_mail"] # Get mail address from request.
+                    mails_core: dict = MailsCore(user_id=user_id, mail_address=address).all() # Get all mails from MailsCore object.
+                    """
                     try:
                         mails_core: dict = MailsCore(user_id=user_id, mail_address=address).all() # Get all mails from MailsCore object.
                     except Exception as e:
@@ -185,13 +187,14 @@ class Web:
                         else:
                             data: dict = dict(message=str(e), address=address)
                             return render(request, "500.html", data)
+                    """
                     # Check mails status.
-                    if mails_core["status"] == "error":
-                        data: dict = dict(message=mails_core["message"], address=address)
-                        return render(request, "500.html", data)
-                    elif mails_core["status"] == "success":
-                        messages = mails_core["messages"]
-                        messages: list = list(reversed(messages)) # Reversed messages from MailsCore object in the 'all' function.
+                    #if mails_core["status"] == "error":
+                    #    data: dict = dict(message=mails_core["message"], address=address)
+                    #    return render(request, "500.html", data)
+                    #elif mails_core["status"] == "success":
+                    messages = mails_core["messages"]
+                    messages: list = list(reversed(messages)) # Reversed messages from MailsCore object in the 'all' function.
                 elif "search_mail" in request.POST: # Is search mail.
                     mail = Mails.objects.filter(user_id=user_id, address=request.POST["search_mail"]) # Get mail object from db.
                     if mail.exists():
@@ -483,3 +486,9 @@ class Web:
 
         logout(request)
         return redirect("index") # Redirect to 'index' page.
+
+
+def handler500(request, *args, **argv):
+    type_, value, traceback = sys.exc_info()
+    data: dict = dict(value=value)
+    return render(request, "500.html", data)
